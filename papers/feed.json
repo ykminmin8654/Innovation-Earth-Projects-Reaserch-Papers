@@ -4,17 +4,24 @@
   "generatedAt": "auto",
   "papers": [
     {
+      "slug": "A Critical Analysis of Nuclear Waste Disposal in Space_ An Assessment of Technical, Economic, and Legal Viability",
+      "title": "A Critical Analysis Of Nuclear Waste Disposal In Space  An Assessment Of Technical, Economic, And Legal Viability",
+      "pdfUrl": "papers/A Critical Analysis of Nuclear Waste Disposal in Space_ An Assessment of Technical, Economic, and Legal Viability.pdf",
+      "mirrorUrl": "downloads/A Critical Analysis of Nuclear Waste Disposal in Space_ An Assessment of Technical, Economic, and Legal Viability.pdf",
+      "sizeKb": 446
+    },
+    {
       "slug": "paper-01-iep-case-study",
       "title": "Paper 01 Iep Case Study",
-      "pdfUrl": "https://researchpapers.innovationearthprojects.org/papers/paper-01-iep-case-study.pdf",
-      "mirrorUrl": "https://researchpapers.innovationearthprojects.org/downloads/paper-01-iep-case-study.pdf",
+      "pdfUrl": "papers/paper-01-iep-case-study.pdf",
+      "mirrorUrl": "downloads/paper-01-iep-case-study.pdf",
       "sizeKb": 16
     },
     {
       "slug": "paper-02-zero-friction",
       "title": "Paper 02 Zero Friction",
-      "pdfUrl": "https://researchpapers.innovationearthprojects.org/papers/paper-02-zero-friction.pdf",
-      "mirrorUrl": "https://researchpapers.innovationearthprojects.org/downloads/paper-02-zero-friction.pdf",
+      "pdfUrl": "papers/paper-02-zero-friction.pdf",
+      "mirrorUrl": "downloads/paper-02-zero-friction.pdf",
       "sizeKb": 6
     }
   ]
