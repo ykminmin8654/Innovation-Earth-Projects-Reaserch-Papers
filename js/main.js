@@ -9,7 +9,7 @@
       motion, everything is shown immediately.
 
    The library page additionally loads papers.js, which does
-   the paper-card rendering and filtering. See papers.js for
+   the paper-card rendering and filtering. See downloads.js for
    a full plain-English explanation of that logic.
    ============================================================ */
 
@@ -27,12 +27,15 @@
 
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      if (e.isIntersecting) {
+      if (e.isIntersecting || e.boundingClientRect.top < 0) {
+        // Show when scrolled into view — or immediately if the element is
+        // ABOVE the viewport (a tall page can push a low-threshold element
+        // past 12% visibility before the observer's first callback fires).
         e.target.classList.add("is-visible");
         io.unobserve(e.target); // reveal once, then stop watching
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: [0, 0.12] });
 
   els.forEach(function (el) { io.observe(el); });
 })();

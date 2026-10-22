@@ -61,6 +61,8 @@ ul{padding-left:var(--s-5);color:var(--ink-soft)}
   background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
 .nav__links a:hover{color:var(--teal)}
 .nav__links a:hover::before{transform:scaleX(1)}
+.nav__links a.is-current{color:var(--teal)}
+.nav__links a.is-current::before{transform:scaleX(1)}
 @media(max-width:720px){.nav__links{display:none}}
 
 /* ---------- 4. BUTTONS & CHIPS ---------- */
@@ -167,6 +169,38 @@ main,.nav,.footer{position:relative;z-index:1}
 .filter-btn.is-active{background:var(--teal);border-color:var(--teal);color:#fff}
 .result-count{font-size:.85rem;color:var(--muted);white-space:nowrap}
 #no-results{text-align:center;color:var(--muted);padding:var(--s-8) 0}
+
+/* ---------- 8a. DOWNLOAD PAGE (downloads.html — raw PDF list) ---------- */
+.container--narrow{max-width:860px;margin-inline:auto}
+.dl-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--s-3)}
+.dl-row{display:flex;align-items:center;gap:var(--s-4);background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5);
+  box-shadow:var(--shadow-sm);transition:border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease)}
+.dl-row:hover{border-color:var(--cyan);box-shadow:var(--shadow-md)}
+.dl-row[hidden]{display:none}
+.dl-row__icon{flex:none;width:42px;height:42px;border-radius:var(--r-md);
+  background:rgba(0,128,128,.08);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.dl-row__main{flex:1;min-width:0}
+.dl-row__title{display:block;font-weight:700;color:var(--ink);text-decoration:none;
+  font-size:.98rem;line-height:1.35;overflow:hidden;text-overflow:ellipsis}
+.dl-row__title:hover{color:var(--teal-deep)}
+.dl-row__byline{margin:2px 0 0;font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.dl-row__meta{display:flex;gap:var(--s-4);font-size:.78rem;color:var(--muted);white-space:nowrap}
+.dl-row__actions{display:flex;gap:var(--s-2);flex:none}
+.dl-footer{display:flex;flex-wrap:wrap;gap:var(--s-3);justify-content:center;margin-top:var(--s-7)}
+/* Prose + numbered steps used on the About page (index.html) */
+.prose p{color:var(--ink-soft);margin:0 0 var(--s-4);line-height:1.7}
+.prose strong{color:var(--ink)}
+.num-list{counter-reset:step;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--s-4)}
+.num-list li{position:relative;padding-left:52px;color:var(--ink-soft);line-height:1.6}
+.num-list li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:-2px;
+  width:36px;height:36px;border-radius:var(--r-pill);background:var(--teal);color:#fff;
+  font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+@media (max-width:720px){
+  .dl-row{flex-wrap:wrap}
+  .dl-row__meta{order:4;width:100%;padding-left:calc(42px + var(--s-4))}
+  .dl-row__actions{margin-left:auto}
+}
 
 /* ---------- 9. PAPER DETAIL PAGE (preprint layout) ---------- */
 .paper{max-width:860px;margin:0 auto}
