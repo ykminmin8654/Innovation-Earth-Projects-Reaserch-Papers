@@ -110,7 +110,13 @@
               version: "1.0",
               pages: null,
               sizeKb: Math.round((e.size || 0) / 1024),
-              pdfUrl: "/papers/" + encodeURIComponent(e.name),
+              // GitHub raw URL = byte-for-byte the exact PDF that was
+              // uploaded to papers/. Served as a real file download, and
+              // it always matches the newest commit (no stale cache).
+              pdfUrl: "https://raw.githubusercontent.com/" +
+                      encodeURIComponent(owner) + "/" +
+                      encodeURIComponent(repo) + "/main/papers/" +
+                      encodeURIComponent(e.name),
               direct: true   // row came from the folder listing itself
             };
           });

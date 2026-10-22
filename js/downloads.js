@@ -56,7 +56,9 @@
         'data-search="' + esc(hay) + '">' +
           '<div class="dl-row__icon"><i class="fas fa-file-pdf"></i></div>' +
           '<div class="dl-row__main">' +
-            '<a class="dl-row__title" href="' + esc(p.pdfUrl) + '" download>' + esc(p.title) + '</a>' +
+            // rel="external": cross-origin links ignore the `download`
+            // attribute, so we make intent explicit and open in a new tab.
+            '<a class="dl-row__title" href="' + esc(p.pdfUrl) + '" target="_blank" rel="noopener">' + esc(p.title) + '</a>' +
             '<p class="dl-row__byline">' + esc(ident) + ' · ' + esc(authors) + '</p>' +
           '</div>' +
           '<div class="dl-row__meta">' +
@@ -65,7 +67,7 @@
             (sizeHint ? '<span>' + sizeHint + '</span>' : '') +
           '</div>' +
           '<div class="dl-row__actions">' +
-            '<a class="btn btn--primary btn--sm" href="' + esc(p.pdfUrl) + '" download><i class="fas fa-file-arrow-down"></i> PDF</a>' +
+            '<a class="btn btn--primary btn--sm" href="' + esc(p.pdfUrl) + '" target="_blank" rel="noopener"><i class="fas fa-file-arrow-down"></i> PDF</a>' +
           '</div>' +
         '</li>';
     });
