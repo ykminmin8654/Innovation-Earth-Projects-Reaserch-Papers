@@ -1,8 +1,10 @@
 # Innovation Earth Projects — Research Papers
 
-A small static website (GitHub Pages) that publishes **research papers** from the
+A small static **download site** (GitHub Pages) for research papers from the
 research division of [Innovation Earth Projects](https://innovationearthprojects.org/home/).
-Every paper can be read online or downloaded as PDF / Markdown. No accounts, no tracking.
+Every paper shows a standard preprint-style summary and can be downloaded as
+PDF / Markdown, or read online. No accounts, no tracking, no admin panel —
+the main website simply links here.
 
 ## File map (what a reviewer/auditor needs to know)
 
@@ -15,10 +17,11 @@ js/paper-page.js            ← fills the preprint header on a paper page: metad
 js/main.js                  ← shared scroll-reveal animation only
 papers/<id>.md              ← paper SOURCE in Markdown (this is what authors write/edit)
 papers/<id>.html            ← GENERATED readable web page (do not hand-edit; rebuilt by build.py)
+papers/feed.json            ← GENERATED machine-readable catalog (for the main site to fetch/link)
 downloads/<id>.pdf          ← GENERATED download copy
 downloads/<id>.md           ← GENERATED copy of the markdown source for download
 downloads/all-papers.zip    ← GENERATED bundle of every paper
-build.py                    ← the generator: markdown -> html + pdf + zip (readable, ~230 lines)
+build.py                    ← the generator: markdown -> html + pdf + zip + feed.json
 ```
 
 Design tokens (teal #008080 / cyan #00CED1 / lime #32CD32, Inter + JetBrains Mono,
@@ -28,13 +31,16 @@ so this site visually links into the main IEP website.
 ## How to publish a new paper (4 steps, no HTML editing)
 
 1. Write the paper as Markdown: `papers/paper-03-my-topic.md`
-2. Add one entry to `js/papers-data.json` (title, summary, category, date, keywords, id).
-3. Run the build: `pip install fpdf2 markdown && python3 build.py`
+   (a `# Title`, a `## Abstract` section, then the body; optional YAML
+   front matter overrides fields from step 2)
+2. Add one entry to `js/papers-data.json` (title, authors, summary, category,
+   date, version, pages, keywords, id).
+3. Run the build: `pip install fpdf2 && python3 build.py`
 4. Commit + push → GitHub Pages updates automatically.
 
-Everything generated (`.html`, `.pdf`, `.zip`) is reproducible from the `.md` sources
-plus the JSON list — which means an auditor can regenerate the site and diff it
-against what is deployed.
+Everything generated (`.html`, `.pdf`, `.zip`, `feed.json`) is reproducible
+from the `.md` sources plus the JSON list — which means an auditor can
+regenerate the site and diff it against what is deployed.
 
 ## Local preview
 
@@ -43,26 +49,20 @@ python3 -m http.server 8000   # then open http://localhost:8000
 ```
 (A plain file:// open works too, but some browsers block fetch() of the JSON locally.)
 
-## Publishing from the main-site admin (recommended)
+## Linking from the main website
 
-The papers library shares ONE admin system with innovationearthprojects.org:
+`papers/feed.json` is a plain, CORS-friendly catalog of everything published
+here: slug, title, description, authors, category, keywords, date, version,
+pages, and absolute base URLs for reading and downloading each paper. The
+main site (innovationearthprojects.org) can fetch it to show a papers list
+or link directly to any PDF:
 
-- **admin.html** (this repo) — "Research Papers Manager". Same admin key,
-  same Cloudflare Worker gate (`/gate`), same GitHub proxy (`/api/v1/github`).
-  Unlock once; the session ticket is shared with the products admin.
-- New papers are committed as Markdown to `papers/data/<slug>.md` with YAML
-  front matter (title, authors, description, status, category, version,
-  pages, tags, order, updatedAt) — the same field style the products admin
-  writes for `products/data/*.md`.
-- `.github/workflows/build-papers.yml` watches `papers/` and runs
-  `build.py` automatically after every admin save: it regenerates the
-  preprint HTML page, PDF download, `papers/feed.json` catalog, and the
-  ZIP bundle, then commits them back. Live in ~2 minutes.
-- `build.py` also *discovers* any `papers/data/*.md` file that has no JSON
-  entry yet, so an admin publish works even before anyone touches
-  `js/papers-data.json`. Set Status = Draft in the admin to keep a paper
-  out of the public library without deleting it.
+```
+https://researchpapers.innovationearthprojects.org/papers/feed.json
+https://researchpapers.innovationearthprojects.org/downloads/<id>.pdf
+```
 
-Audit path: admin commit -> `git log -- papers/data` shows who published
-what (commit messages say "via admin"); all generated artifacts are
-reproducible with `python3 build.py`.
+There is deliberately NO publishing/admin surface on this site. Papers are
+added only through the repo (edit files → run build.py → push), so every
+change has a git history an auditor can follow: `git log -- js/papers-data.json papers/`.
+

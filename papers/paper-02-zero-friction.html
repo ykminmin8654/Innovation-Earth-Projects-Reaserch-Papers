@@ -65,45 +65,27 @@
 
       <!-- ======= FULL ARTICLE (rendered from papers/<id>.md) ======= -->
       <div class="paper-body">
-<h2>1. Introduction</h2>
+<h2 class="h2">1. Introduction</h2>
 <p>The typical adoption path for an ed-tech tool is: teacher selects tool → students create accounts (often with school email) → students wait for verification → students navigate onboarding → students finally use the tool. Each arrow in this chain loses users. For teenage students using tools opportunistically — five minutes before a deadline, one study period at lunch — the cumulative friction is often decisive.</p>
-<p>This paper asks a narrow question: <strong>how much of the observed non-adoption of educational tools is attributable to access friction rather than to the tool's usefulness?</strong></p>
-<h2>2. Background: friction, dark patterns, and required effort</h2>
+<p>This paper asks a narrow question: **how much of the observed non-adoption of educational tools is attributable to access friction rather than to the tool's usefulness?**</p>
+<h2 class="h2">2. Background: friction, dark patterns, and required effort</h2>
 <p>Friction in interface design is any element that slows or complicates task completion. Dark patterns are cases where friction is deliberately asymmetric — easy to sign up, hard to cancel; hidden prices; forced data capture (Brignull, 2011; Gray et al., 2018). In K–12 contexts, account requirements also intersect with privacy regulation (FERPA, COPPA) and parental concern, raising the stakes of every field a tool asks for (Gilliam, 2020).</p>
-<p>Adolescent users are not indifferent to this. Survey work has repeatedly found teens practice "casual privacy management" — they will trade data for convenience, but express strong preference for tools that simply do not ask (Lenhart, 2009; Livingstone &amp; Helsper, 2007).</p>
-<h2>3. Observations</h2>
+<p>Adolescent users are not indifferent to this. Survey work has repeatedly found teens practice "casual privacy management" — they will trade data for convenience, but express strong preference for tools that simply do not ask (Lenhart, 2009; Livingstone & Helsper, 2007).</p>
+<h2 class="h2">3. Observations</h2>
 <p>Between 2025 and 2026, members of a student software studio observed usage patterns across three informal settings: a high-school coding club, two science-fair prep groups, and general homework use among classmates. Recurring findings:</p>
-<ol>
-<li><strong>Reflexive avoidance of new accounts.</strong> Students who already had "too many logins" rejected tools requiring another, even when the tool was recommended by peers.</li>
-<li><strong>Email-capture distrust.</strong> Requests for an email address were commonly met with throwaway addresses or abandonment, poisoning the tool's own analytics.</li>
-<li><strong>Link-only success.</strong> Tools shared as a bare URL, usable immediately, saw repeat use within the same week; otherwise identical tools behind a signup wall did not.</li>
-<li><strong>Teacher workaround behaviour.</strong> Teachers reported scheduling "account creation days" purely to satisfy vendor requirements — institutional friction that adds no learning value.</li>
-</ol>
+<p>1. **Reflexive avoidance of new accounts.** Students who already had "too many logins" rejected tools requiring another, even when the tool was recommended by peers. 2. **Email-capture distrust.** Requests for an email address were commonly met with throwaway addresses or abandonment, poisoning the tool's own analytics. 3. **Link-only success.** Tools shared as a bare URL, usable immediately, saw repeat use within the same week; otherwise identical tools behind a signup wall did not. 4. **Teacher workaround behaviour.** Teachers reported scheduling "account creation days" purely to satisfy vendor requirements — institutional friction that adds no learning value.</p>
 <p>These are anecdotal, single-site observations, not a controlled study; they are reported here to motivate proper empirical work.</p>
-<h2>4. The ten-second rule</h2>
+<h2 class="h2">4. The ten-second rule</h2>
 <p>From the above we distil four design commitments for student-facing tools:</p>
-<ul>
-<li><strong>Open a link, start working.</strong> No account required for core functionality.</li>
-<li><strong>Show price before promise.</strong> If anything costs money, say so on the listing card.</li>
-<li><strong>Local by default.</strong> Compute in the browser; nothing leaves the device unless the user exports it.</li>
-<li><strong>Optional persistence.</strong> Saving progress may require an account, but saving must never be required to <em>use</em>.</li>
-</ul>
+<p>- **Open a link, start working.** No account required for core functionality. - **Show price before promise.** If anything costs money, say so on the listing card. - **Local by default.** Compute in the browser; nothing leaves the device unless the user exports it. - **Optional persistence.** Saving progress may require an account, but saving must never be required to *use*.</p>
 <p>A tool satisfies the rule if a first-time student can produce real output within ten seconds of opening the link.</p>
-<h2>5. Discussion</h2>
-<p>The rule reframes the classic growth funnel. Commercial ed-tech optimises for captured identities (accounts, emails, rosters); learner-originated studios can instead optimise for <em>time-to-value</em>, because they carry no advertising or data-monetisation business model that requires identity capture. This aligns with constructionist pedagogy — tools should disappear into the act of making (Papert, 1980) — and with Privacy by Design's "privacy as default setting" principle (Cavoukian, 2011).</p>
-<p>Counterpoints worth testing: teachers sometimes <em>need</em> account-based dashboards for grading; friction occasionally signals seriousness and reduces misuse; and browser-local tools cannot sync across devices. None of these require email capture of minors as the default path, but they do require optional, clearly-scoped features.</p>
-<h2>6. Limitations and next steps</h2>
+<h2 class="h2">5. Discussion</h2>
+<p>The rule reframes the classic growth funnel. Commercial ed-tech optimises for captured identities (accounts, emails, rosters); learner-originated studios can instead optimise for *time-to-value*, because they carry no advertising or data-monetisation business model that requires identity capture. This aligns with constructionist pedagogy — tools should disappear into the act of making (Papert, 1980) — and with Privacy by Design's "privacy as default setting" principle (Cavoukian, 2011).</p>
+<p>Counterpoints worth testing: teachers sometimes *need* account-based dashboards for grading; friction occasionally signals seriousness and reduces misuse; and browser-local tools cannot sync across devices. None of these require email capture of minors as the default path, but they do require optional, clearly-scoped features.</p>
+<h2 class="h2">6. Limitations and next steps</h2>
 <p>Sample size is effectively zero for statistical purposes; all claims are directional. Next steps: (a) instrument a paired A/B deployment of one tool with and without a signup wall in a willing classroom, (b) replicate with an external school district, (c) audit third-party requests made by "no tracking" tools to verify the claim technically.</p>
-<h2>References</h2>
-<ul>
-<li>Brignull, H. (2011). <em>Dark Patterns: Deception vs. Honesty in UI Design.</em></li>
-<li>Cavoukian, A. (2011). <em>Privacy By Design: The 7 Foundational Principles.</em></li>
-<li>Gilliam, B. (2020). <em>Google and the Life of the Mind</em> (internal review).</li>
-<li>Gray, C. M., Pinch, A., Nieva, G., &amp; Davison, T. (2018). Dark Patterns. <em>PACM HCI</em>, 2(CSCW).</li>
-<li>Lenhart, A. (2009). <em>Teens and Privacy Management.</em> Pew Internet.</li>
-<li>Livingstone, S., &amp; Helsper, E. J. (2007). Gradations in Children's Online Skills.</li>
-<li>Papert, S. (1980). <em>Mindstorms: Children, Computers, and Powerful Ideas.</em></li>
-</ul>
+<h2 class="h2">References</h2>
+<p>- Brignull, H. (2011). *Dark Patterns: Deception vs. Honesty in UI Design.* - Cavoukian, A. (2011). *Privacy By Design: The 7 Foundational Principles.* - Gilliam, B. (2020). *Google and the Life of the Mind* (internal review). - Gray, C. M., Pinch, A., Nieva, G., & Davison, T. (2018). Dark Patterns. *PACM HCI*, 2(CSCW). - Lenhart, A. (2009). *Teens and Privacy Management.* Pew Internet. - Livingstone, S., & Helsper, E. J. (2007). Gradations in Children's Online Skills. - Papert, S. (1980). *Mindstorms: Children, Computers, and Powerful Ideas.*</p>
       </div>
 
       <hr class="rule" />

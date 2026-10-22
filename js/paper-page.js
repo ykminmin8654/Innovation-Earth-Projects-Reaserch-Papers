@@ -99,8 +99,8 @@
   }
 
   function identifier(p) {
-    // Declared papers use their "number"; admin-published papers without one
-    // get a stable pseudo-number derived from the slug (same slug -> same id).
+    // Papers with a "number" use it; entries without one get a stable
+    // pseudo-number derived from the slug (same slug -> same id).
     var num = (p.number || "").replace(/\D+/g, "");
     if (!num) {
       var h = 0, s = String(p.id || p.slug || "x");

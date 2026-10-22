@@ -12,19 +12,21 @@ WHAT IT DOES, STEP BY STEP:
   1. Reads js/papers-data.json (the list of all papers).
   2. For each paper, reads papers/<id>.md  (markdown source = editable truth).
   3. Writes papers/<id>.html               (styled web page, shared css/js).
-  4. Writes downloads/<id>.pdf             (print version; needs weasyprint,
+  4. Writes downloads/<id>.pdf             (print version; needs fpdf2,
                                             otherwise skipped with a warning).
   5. Copies downloads/<id>.md so it can be downloaded from the site too.
   6. Builds downloads/all-papers.zip containing every .md and .pdf.
-  7. Writes papers/feed.json — the machine-readable catalog that the
-     main website's admin panel (innovationearthprojects.org/admin/)
-     uses to publish new papers straight into this repo.
+  7. Writes papers/feed.json — a plain machine-readable catalog of the
+     published papers. The main website (innovationearthprojects.org)
+     links here and can fetch this file to list/download papers. It is
+     OUTPUT ONLY: adding a paper happens by editing papers-data.json +
+     papers/<id>.md and re-running this script. There is no admin panel.
 
 FRONT MATTER: papers may optionally start with a YAML block
-(--- ... ---) using the SAME field names the main site's products use
-(title, description, status, url, pricing, tags, order, icon, updatedAt).
-The admin panel writes exactly those fields, so one parser serves both.
-If a paper has no front-matter block, the JSON catalog entry is used.
+(--- ... ---) with simple key: value lines (title, description, status,
+tags, authors, category, version, pages, order, updatedAt). If present,
+these fields override the matching entry in js/papers-data.json. If a
+paper has no front-matter block, the JSON catalog entry is used as-is.
 """
 import json, os, re, shutil, sys, zipfile
 
@@ -66,7 +68,7 @@ def parse_front_matter(md_text):
     """If the markdown starts with a '--- YAML ---' block, return
     (fields_dict, body_without_block). Otherwise return ({}, md_text).
 
-    Understands exactly the field style the main site's admin panel writes:
+    Understands this simple field style:
       key: "quoted value"        key: 999        key: ["a", "b"]
     Unknown keys are kept as-is; nothing here needs external libraries.
     """
@@ -94,10 +96,10 @@ def parse_front_matter(md_text):
             fields[key] = val
     return fields, md_text[m.end():]
 
-def apply_admin_fields(entry, fm):
-    """Merge admin-panel front-matter fields into a catalog entry.
-    Admin values win over JSON values, so publishing through
-    innovationearthprojects.org/admin/ is the authoritative path."""
+def apply_front_matter(entry, fm):
+    """Merge a paper's optional front-matter fields into its catalog entry.
+    Front matter (in the .md file) wins over js/papers-data.json, so the
+    markdown source stays the single editable truth for each paper."""
     if fm.get("title"):
         entry["title"] = fm["title"]
     if fm.get("description"):
@@ -127,46 +129,6 @@ def apply_admin_fields(entry, fm):
         except ValueError:
             pass
     return entry
-
-# ---------------------------------------------------------------- discovery
-def discover_papers(papers_dir, existing_ids):
-    """Find markdown files the ADMIN panel created that are NOT yet listed
-    in js/papers-data.json. Admin writes papers/data/<slug>.md; hand-written
-    sources live at papers/<id>.md. Auto-created entries keep the library
-    working end-to-end even before anyone edits the JSON by hand."""
-    found = []
-    data_dir = os.path.join(ROOT, papers_dir, "data")
-    if not os.path.isdir(data_dir):
-        return found
-    for fname in sorted(os.listdir(data_dir)):
-        if not fname.endswith(".md") or fname == "README.md":
-            continue  # README.md documents the folder; it is not a paper
-        slug = fname[:-3]
-        if slug in existing_ids:
-            continue
-        fm, _body = parse_front_matter(read(os.path.join(papers_dir, "data", fname)))
-        title = fm.get("title") or slug.replace("-", " ").title()
-        entry = {
-            "id": slug,
-            "number": "Preprint",
-            "title": title,
-            "authors": fm.get("authors") or ["IEP Research Division"],
-            "summary": fm.get("description") or "Published via the IEP content admin.",
-            "category": fm.get("category") or "Education Research",
-            "keywords": fm.get("tags") or [],
-            "date": fm.get("updatedAt") or "",
-            "version": str(fm.get("version") or "1.0").lstrip("vV"),
-            "pages": int(fm.get("pages") or 10),
-            "status": fm.get("status") or "live",
-            "order": int(fm.get("order") or 999),
-            "autoDiscovered": True,
-            "readUrl": f"papers/{slug}.html",
-            "pdfUrl": f"downloads/{slug}.pdf",
-            "mdUrl": f"downloads/{slug}.md",
-        }
-        found.append(entry)
-        print(f"  DISCOVERED admin-published paper: {slug} ({title[:50]})")
-    return found
 
 # ---------------------------------------------------------------- template
 PAGE_TEMPLATE = """<!DOCTYPE html>
@@ -424,11 +386,6 @@ def main():
     data = json.loads(read("js/papers-data.json"))
     papers = list(data["papers"])
 
-    # Admin-published papers: anything in papers/data/*.md that is not
-    # already declared in the JSON gets an auto-created catalog entry.
-    known_ids = {p["id"] for p in papers}
-    papers += discover_papers("papers", known_ids)
-
     print(f"Building {len(papers)} paper(s)...")
 
     try:
@@ -441,21 +398,17 @@ def main():
     built = []  # catalog entries that actually made it onto the site -> feed.json
     for p in papers:
         pid = p["id"]
-        # Hand-written sources live at papers/<id>.md; admin-published
-        # sources live at papers/data/<id>.md. Check both, prefer manual.
+        # Every paper's editable source lives at papers/<id>.md.
         md_path = f"papers/{pid}.md"
         if not os.path.exists(os.path.join(ROOT, md_path)):
-            alt = f"papers/data/{pid}.md"
-            md_path = alt if os.path.exists(os.path.join(ROOT, alt)) else None
-        if md_path is None:
             print(f"  SKIP {pid}: missing source papers/{pid}.md")
             continue
         md_text_raw = read(md_path)
 
-        # 0. Front matter: admin-published fields override the JSON entry,
+        # 0. Front matter: fields in the .md override the JSON entry,
         #    and 'draft'/'soon' papers are held back from the public library.
         fm, md_text = parse_front_matter(md_text_raw)
-        p = apply_admin_fields(dict(p), fm)
+        p = apply_front_matter(dict(p), fm)
         if str(p.get("status", "live")) in ("draft", "soon"):
             print(f"  HOLD {pid}: status '{p['status']}' is not live - not published")
             continue
@@ -510,14 +463,19 @@ def main():
                     z.write(os.path.join(ROOT, d, f), arcname=f)
     print("  bundled downloads/all-papers.zip")
 
-    # 5. papers/feed.json — the catalog the MAIN SITE reads.
-    #    innovationearthprojects.org links here; its admin panel can write
-    #    new .md files into papers/ (same front-matter style as products),
-    #    and anything rebuilt from a live status shows up in this feed.
-    #    Shape mirrors the Worker's /products feed: slug, title, description…
+    # 5. papers/feed.json — a plain machine-readable catalog of the
+    #    published papers, meant to be FETCHED by innovationearthprojects.org
+    #    (or any other site) so it can list/link/download them. It is
+    #    generated output only: add papers by editing js/papers-data.json
+    #    + papers/<id>.md and re-running build.py.
     built.sort(key=lambda x: (int(x.get("order", 999)), str(x.get("date", "")), ))
     feed = {
         "$comment": "GENERATED by build.py - do not edit by hand. Catalog of published papers for innovationearthprojects.org and js/papers.js.",
+        "site": "https://researchpapers.innovationearthprojects.org/",
+        "baseUrls": {
+            "read": "https://researchpapers.innovationearthprojects.org/papers/",
+            "download": "https://researchpapers.innovationearthprojects.org/downloads/",
+        },
         "generatedAt": __import__("datetime").date.today().isoformat(),
         "papers": [
             {

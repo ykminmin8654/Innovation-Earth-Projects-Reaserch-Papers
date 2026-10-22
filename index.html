@@ -105,16 +105,16 @@
       <header class="section__head reveal">
         <span class="eyebrow">For authors</span>
         <h2 class="section__title">How a paper gets on this page</h2>
-        <p class="section__sub">Same admin as the main website — one key, one login.</p>
+        <p class="section__sub">Plain files, one build script — everything is auditable.</p>
       </header>
       <ol class="num-list container" style="max-width:720px;margin-inline:auto;font-size:1rem">
-        <li><strong>Publish from the admin panel.</strong> Open <a href="admin.html"><code>admin.html</code></a> on this site (or <a href="https://innovationearthprojects.org/admin/"><code>innovationearthprojects.org/admin/</code></a>) and unlock with the shared IEP admin key. Click <em>＋ New paper</em>, fill in title, authors, summary, category and body, then <em>Save &amp; publish</em>. It commits Markdown straight into <code>papers/data/&lt;slug&gt;.md</code> in this repository.</li>
-        <li><strong>The build runs itself.</strong> A GitHub Action watches <code>papers/</code>: it runs <code>build.py</code>, which generates the styled preprint page, the PDF download, and refreshes <code>papers/feed.json</code> and <code>downloads/all-papers.zip</code>. Live in about two minutes.</li>
-        <li><strong>(Optional) hand-write instead.</strong> Prefer editing files? Drop <code>papers/&lt;id&gt;.md</code> plus one entry in <code>js/papers-data.json</code> and run <code>python3 build.py</code> yourself — both paths produce the same output.</li>
+        <li><strong>Write the paper as Markdown.</strong> Create <code>papers/&lt;id&gt;.md</code> in this repository with a <code># Title</code>, a <code>## Abstract</code> section, and the body. That file is the single editable source of truth.</li>
+        <li><strong>Add it to the catalog.</strong> Add one entry for the new paper in <code>js/papers-data.json</code> — title, authors, summary, category, keywords, date, version, pages.</li>
+        <li><strong>Run the build.</strong> <code>python3 build.py</code> generates the styled preprint page (<code>papers/&lt;id&gt;.html</code>), the PDF download (<code>downloads/&lt;id&gt;.pdf</code>), the Markdown copy, <code>downloads/all-papers.zip</code>, and refreshes <code>papers/feed.json</code>.</li>
         <li><strong>Push to GitHub</strong> — GitHub Pages serves the updated library automatically.</li>
       </ol>
       <div class="container" style="text-align:center;margin-top:1.5rem">
-        <a href="admin.html" class="btn btn--primary"><i class="fas fa-lock"></i> Open the papers admin</a>
+        <a href="https://innovationearthprojects.org/home/" class="btn btn--primary"><i class="fas fa-globe"></i> Back to innovationearthprojects.org</a>
       </div>
     </div>
   </section>
