@@ -26,8 +26,25 @@
   // Site root prefix: this page lives at <root>/downloads/, so ../ is root.
   var base = "../";
 
+  // ---- self-healing link rewrite -------------------------------------------
+  // Some CDN caches can serve a stale copy of js/catalog.js for up to ~10
+  // minutes after a push. If an old copy built relative links like
+  // "papers/x.pdf", clicking them from /downloads/ resolved to
+  // "/downloads/papers/x.pdf" — which GitHub Pages answers with its 404 HTML
+  // page, so the browser "downloaded an html file". Regardless of what the
+  // cached script produced, we force every paper link here to the EXACT bytes
+  // uploaded to papers/<name>.pdf, served straight from GitHub's raw store
+  // (application/octet-stream => always a real file download, never HTML).
+  function canonicalPdfUrl(p) {
+    var name = String(p.id || "").replace(/[^A-Za-z0-9._-]/g, "") + ".pdf";
+    return "https://raw.githubusercontent.com/ykminmin8654/" +
+           "Innovation-Earth-Projects-Reaserch-Papers/main/papers/" +
+           encodeURIComponent(name);
+  }
+
   window.loadPapers(base)
     .then(function (papers) {
+      papers.forEach(function (p) { p.pdfUrl = canonicalPdfUrl(p); });
       // Newest first using the ISO date string (safe lexicographic sort).
       papers.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
       renderRows(papers);
