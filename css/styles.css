@@ -140,6 +140,10 @@ main,.nav,.footer{position:relative;z-index:1}
 .badge--live{background:rgba(0,206,209,.12);color:var(--teal-deep)}
 .badge--draft{background:rgba(106,128,133,.15);color:var(--muted)}
 .paper-card__title{font-size:1.05rem;line-height:1.3}
+.paper-card__title a{color:inherit;text-decoration:none}
+.paper-card__title a:hover{color:var(--teal-deep)}
+.paper-card__authors{font-size:.82rem;color:var(--teal-deep);margin:0;font-weight:600}
+.paper-card__authors i{color:var(--cyan);margin-right:4px}
 .paper-card__summary{font-size:.9rem;color:var(--muted);flex:1}
 .paper-card__meta{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:var(--s-4);
   font-size:.8rem;color:var(--muted)}
@@ -164,13 +168,58 @@ main,.nav,.footer{position:relative;z-index:1}
 .result-count{font-size:.85rem;color:var(--muted);white-space:nowrap}
 #no-results{text-align:center;color:var(--muted);padding:var(--s-8) 0}
 
-/* ---------- 9. PAPER DETAIL PAGE (markdown-rendered content) ---------- */
+/* ---------- 9. PAPER DETAIL PAGE (preprint layout) ---------- */
 .paper{max-width:860px;margin:0 auto}
 .paper p{text-align:justify;hyphens:auto;color:var(--ink-soft)}
 .paper h1{font-size:clamp(2rem,4vw,3rem);margin-bottom:var(--s-5)}
 .paper h2{font-size:clamp(1.5rem,3vw,2rem);margin-top:var(--s-8);padding-bottom:var(--s-2);
   border-bottom:2px solid var(--cyan);color:var(--teal-deep)}
 .paper h3{font-size:1.25rem;margin-top:var(--s-6);color:var(--teal-deep)}
+
+/* 9a. Preprint header block: series label, title, authors, badge grid */
+.paper-header{margin-bottom:var(--s-6)}
+.paper-header__series{display:inline-block;font-family:var(--mono);font-size:.75rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--teal);background:rgba(0,206,209,.1);
+  border:1px solid rgba(0,206,209,.35);border-radius:var(--r-pill);padding:5px 14px;margin-bottom:var(--s-4)}
+.paper-header .h1{font-size:clamp(1.9rem,4vw,2.9rem);margin-bottom:var(--s-4)}
+.paper-header__authors{font-weight:600;color:var(--ink);font-size:1.05rem;margin-bottom:var(--s-4)}
+.paper-header__authors i{color:var(--teal);margin-right:6px}
+.paper-header__front{display:flex;flex-wrap:wrap;gap:var(--s-2);margin-bottom:var(--s-5)}
+.chip--fm{font-size:.75rem;background:var(--surface);border:1px solid var(--border);
+  color:var(--muted);border-radius:var(--r-pill);padding:4px 12px;display:inline-block}
+.paper-header__badges{display:flex;flex-wrap:wrap;gap:var(--s-3);margin:0}
+.paper-header__badges div{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:10px 16px;box-shadow:var(--shadow-sm)}
+.paper-header__badges dt{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.paper-header__badges dd{margin:2px 0 0;font-weight:600;font-size:.92rem;color:var(--ink)}
+
+/* 9b. Abstract box (highlighted, standard preprint placement) */
+.abstract-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--teal);
+  border-radius:var(--r-md);padding:var(--s-5) var(--s-6);margin-bottom:var(--s-5);box-shadow:var(--shadow-sm)}
+.abstract-box__title{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal-deep);margin:0 0 var(--s-3);border:none;padding:0}
+.abstract-box__title i{margin-right:6px;color:var(--cyan)}
+.abstract-box p:last-child{margin-bottom:0}
+
+/* 9c. Summary & details card + citation box */
+.pmeta-card{background:var(--surface-alt);border:1px solid var(--border-soft);border-radius:var(--r-lg);
+  padding:var(--s-5) var(--s-6);margin-bottom:var(--s-6)}
+.pmeta-card__title{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal-deep);margin:0 0 var(--s-3);border:none;padding:0}
+.pmeta-card__title i{margin-right:6px;color:var(--cyan)}
+.pmeta-card__text{font-size:.95rem;margin-bottom:var(--s-4)}
+.pmeta{display:grid;gap:var(--s-2)}
+.pmeta__row{display:flex;gap:var(--s-4);align-items:baseline;font-size:.9rem;
+  padding:6px 0;border-top:1px dashed var(--border)}
+.pmeta__label{flex:0 0 150px;color:var(--muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.pmeta__label i{color:var(--cyan);margin-right:6px;width:14px;text-align:center}
+.pmeta__value{color:var(--ink);font-weight:500}
+.pmeta__value a.chip{text-decoration:none}
+.citation{margin-top:var(--s-4);background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:var(--s-4) var(--s-5)}
+.citation__label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.citation__text{font-size:.88rem;color:var(--ink-soft);margin:var(--s-2) 0 var(--s-3);line-height:1.5}
+
 .rule{border:none;border-top:1px solid var(--border-soft);margin:var(--s-7) 0}
 .paper table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);
   border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;font-size:.9rem;margin:var(--s-5) 0}

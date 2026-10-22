@@ -1,14 +1,24 @@
 {
-  "$comment": "SINGLE SOURCE OF TRUTH for the paper library. To publish a new paper: (1) write papers/<id>.md, (2) add an object to the 'papers' array below, (3) run python3 build.py. The website reads this file at runtime — no HTML editing needed.",
+  "$comment": "SINGLE SOURCE OF TRUTH for the paper library. To publish a new paper: (1) write papers/<id>.md, (2) add an object to the 'papers' array below, (3) run python3 build.py. The website reads this file at runtime \u2014 no HTML editing needed.",
   "papers": [
     {
       "id": "paper-01-iep-case-study",
       "number": "Paper 01",
       "title": "Innovation Earth Projects: A Case Study of a Student-Run, Privacy-First Software Studio Serving Secondary-School Learners",
-      "summary": "An exploratory qualitative case study of IEP's founding narrative, four shipping rules, and zero-friction design values — and what they suggest about learner-originated tooling in an era of ed-tech dark patterns.",
+      "authors": [
+        "IEP Research Division"
+      ],
+      "summary": "An exploratory qualitative case study of IEP's founding narrative, four shipping rules, and zero-friction design values \u2014 and what they suggest about learner-originated tooling in an era of ed-tech dark patterns.",
       "category": "Case Studies",
-      "keywords": ["student-built software", "privacy-by-design", "ed-tech", "dark patterns", "case study"],
+      "keywords": [
+        "student-built software",
+        "privacy-by-design",
+        "ed-tech",
+        "dark patterns",
+        "case study"
+      ],
       "date": "2026-10-22",
+      "version": "v1.0",
       "pages": 14,
       "status": "new",
       "readUrl": "papers/paper-01-iep-case-study.html",
@@ -19,10 +29,20 @@
       "id": "paper-02-zero-friction",
       "number": "Paper 02",
       "title": "Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students",
+      "authors": [
+        "IEP Research Division"
+      ],
       "summary": "A short working paper reviewing classroom observations and HCI literature on account-gating, email capture, and onboarding flows as barriers to educational tool adoption for ages 14-18.",
       "category": "Education Research",
-      "keywords": ["adoption", "signup walls", "onboarding", "friction", "classroom use"],
+      "keywords": [
+        "adoption",
+        "signup walls",
+        "onboarding",
+        "friction",
+        "classroom use"
+      ],
       "date": "2026-10-22",
+      "version": "v1.0 (draft)",
       "pages": 9,
       "status": "new",
       "readUrl": "papers/paper-02-zero-friction.html",

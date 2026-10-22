@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Innovation Earth Projects: A Case Study of a Student-Run, Privacy-First Software Studio Serving Secondary-School Learners - IEP Research Papers</title>
+<title>Innovation Earth Projects: A Case Study of a Student-Run, Privacy-First Software Studio Serving Secondary-School Learners - IEP Preprints</title>
 <meta name="description" content="An exploratory qualitative case study of IEP's founding narrative, four shipping rules, and zero-friction design values — and what they suggest about learner-originated tooling in an era of ed-tech dark patterns." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body data-page="paper-detail">
+<body data-page="paper-detail" data-paper-id="paper-01-iep-case-study">
 
 <header class="nav">
   <div class="nav__inner">
@@ -28,19 +28,44 @@
 </header>
 
 <main>
-  <section class="section section--tint paper-detail">
+  <article class="section section--tint paper-detail">
     <div class="container paper">
       <p class="paper-detail__crumbs"><a href="../index.html"><i class="fas fa-arrow-left"></i> Back to paper library</a></p>
-      <h1>Innovation Earth Projects: A Case Study of a Student-Run, Privacy-First Software Studio Serving Secondary-School Learners</h1>
-<p><strong>Type:</strong> Exploratory case study / web-based content analysis
-<strong>Subject of study:</strong> Innovation Earth Projects LLC (innovationearthprojects.org)
-<strong>Data source:</strong> Public website pages (<code>/home/</code>, <code>/products</code>, <code>/about</code>), accessed October 22, 2026
-<strong>Author:</strong> Prepared for internal research purposes</p>
-<hr />
-<h2>Abstract</h2>
-<p>This paper presents a qualitative case study of Innovation Earth Projects (IEP), a student-run software studio based in Utah, USA, that develops free or clearly-priced digital tools for secondary-school students. Through a structured content analysis of the organization's public website, we examine its founding narrative, product philosophy, operational principles, and stated design values — namely "no ads, no tracking, optional accounts." We situate IEP within broader literatures on self-directed learning, ed-tech friction and dark patterns, adolescent privacy concerns, and student entrepreneurship. Findings suggest that IEP represents an emerging model of <em>learner-originated tooling</em>: software built by students aged 14–18, driven by authentic classroom and competition needs, distributed without signup walls, and governed by four explicit shipping rules. We discuss implications for educators, platform designers, and policy-makers concerned with youth data privacy, and identify limitations and directions for future empirical work.</p>
-<p><strong>Keywords:</strong> student-built software, privacy-by-design, ed-tech, self-directed learning, dark patterns, case study, K–12 education, digital commons</p>
-<hr />
+
+      <!-- ======= PREPRINT HEADER (standard industry layout) ======= -->
+      <header class="paper-header reveal">
+        <span class="paper-header__series">Innovation Earth Projects &middot; Preprint</span>
+        <h1 class='h1'>Innovation Earth Projects: A Case Study of a Student-Run, Privacy-First Software Studio Serving Secondary-School Learners</h1>
+        <p class="paper-header__authors"><i class="fas fa-user-pen"></i> IEP Research Division</p>
+        <dl class="paper-header__badges">
+          <div><dt>Submitted</dt><dd>October 22, 2026</dd></div>
+          <div><dt>Category</dt><dd>Case Studies</dd></div>
+          <div><dt>Version</dt><dd>v1.0</dd></div>
+          <div><dt>Pages</dt><dd>14</dd></div>
+        </dl>
+      </header>
+
+      <!-- Abstract box: the first "## Abstract" section of the markdown
+           is moved up here automatically by build.py (see split_abstract). -->
+      <div class="paper-header__front"><span class="chip chip--fm">Type: Exploratory case study / web-based content analysis</span> <span class="chip chip--fm">Subject of study: Innovation Earth Projects LLC (innovationearthprojects.org)</span> <span class="chip chip--fm">Data source: Public website pages (`/home/`, `/products`, `/about`), accessed October 22, 2026</span> <span class="chip chip--fm">Author: Prepared for internal research purposes</span></div>
+      <aside class='abstract-box reveal'><h2 class='abstract-box__title'><i class='fas fa-align-left'></i> Abstract</h2><p>This paper presents a qualitative case study of Innovation Earth Projects (IEP), a student-run software studio based in Utah, USA, that develops free or clearly-priced digital tools for secondary-school students. Through a structured content analysis of the organization's public website, we examine its founding narrative, product philosophy, operational principles, and stated design values — namely "no ads, no tracking, optional accounts." We situate IEP within broader literatures on self-directed learning, ed-tech friction and dark patterns, adolescent privacy concerns, and student entrepreneurship. Findings suggest that IEP represents an emerging model of <em>learner-originated tooling</em>: software built by students aged 14–18, driven by authentic classroom and competition needs, distributed without signup walls, and governed by four explicit shipping rules. We discuss implications for educators, platform designers, and policy-makers concerned with youth data privacy, and identify limitations and directions for future empirical work.</p>
+<p><strong>Keywords:</strong> student-built software, privacy-by-design, ed-tech, self-directed learning, dark patterns, case study, K–12 education, digital commons</p></aside>
+
+      <!-- Summary + metadata strip, filled at runtime by js/paper-page.js
+           from js/papers-data.json (keywords, identifier, citation). -->
+      <section class="pmeta-card reveal" aria-label="Paper summary and metadata">
+        <h2 class="pmeta-card__title"><i class="fas fa-circle-info"></i> Summary &amp; details</h2>
+        <p class="pmeta-card__text">An exploratory qualitative case study of IEP's founding narrative, four shipping rules, and zero-friction design values — and what they suggest about learner-originated tooling in an era of ed-tech dark patterns.</p>
+        <div id="paper-meta" class="pmeta"><!-- rows injected by js/paper-page.js --></div>
+        <div class="citation">
+          <span class="citation__label">Cite as</span>
+          <p id="citation-text" class="citation__text">&nbsp;</p>
+          <button id="copy-citation" class="btn btn--ghost btn--sm" type="button"><i class="fas fa-quote-left"></i> Copy citation</button>
+        </div>
+      </section>
+
+      <!-- ======= FULL ARTICLE (rendered from papers/<id>.md) ======= -->
+      <div class="paper-body">
 <h2>1. Introduction</h2>
 <h3>1.1 Background</h3>
 <p>Digital learning tools have proliferated since the mid-2010s, yet secondary-school students frequently encounter three recurring problems: (a) mandatory account creation and email capture before use ("signup walls"), (b) advertising and behavioral tracking embedded in supposedly educational products, and (c) paywalls concealed until after onboarding. These frictions are well documented under the concept of <em>dark patterns</em> in human–computer interaction (Brignull, 2011; Gray et al., 2018). Concurrently, adolescent users have shown growing awareness of data privacy, though they often lack alternatives that respect it while remaining free and fast (Lenhart, 2009; Livingstone &amp; Helsper, 2007).</p>
@@ -283,14 +308,16 @@
 </tr>
 </tbody>
 </table>
+      </div>
+
       <hr class="rule" />
       <div class="paper-detail__downloads">
-        <a class="btn btn--primary" href="../downloads/paper-01-iep-case-study.pdf" download><i class="fas fa-file-pdf"></i> Download PDF</a>
-        <a class="btn btn--secondary" href="../downloads/paper-01-iep-case-study.md" download><i class="fab fa-markdown"></i> Download Markdown</a>
+        <a class="btn btn--primary" href="../downloads/paper-01-iep-case-study.pdf" download><i class="fas fa-file-arrow-down"></i> Download article (PDF)</a>
+        <a class="btn btn--secondary" href="../downloads/paper-01-iep-case-study.md" download><i class="fab fa-markdown"></i> Download Markdown source</a>
         <a class="btn btn--ghost" href="https://innovationearthprojects.org/home/"><i class="fas fa-globe"></i> innovationearthprojects.org</a>
       </div>
     </div>
-  </section>
+  </article>
 </main>
 
 <footer class="footer">
@@ -301,5 +328,6 @@
 </footer>
 
 <script src="../js/main.js"></script>
+<script src="../js/paper-page.js"></script>
 </body>
 </html>

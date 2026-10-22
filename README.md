@@ -11,6 +11,7 @@ index.html                  ← the public library page (search + category filte
 css/styles.css              ← ALL styling; numbered sections 1–10 in the header comment
 js/papers-data.json         ← THE PAPER LIST (single source of truth) — edit this to publish
 js/papers.js                ← renders cards from the JSON + search/filter logic (plain-English comments)
+js/paper-page.js            ← fills the preprint header on a paper page: metadata, keywords, citation
 js/main.js                  ← shared scroll-reveal animation only
 papers/<id>.md              ← paper SOURCE in Markdown (this is what authors write/edit)
 papers/<id>.html            ← GENERATED readable web page (do not hand-edit; rebuilt by build.py)

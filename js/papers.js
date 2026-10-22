@@ -45,30 +45,44 @@
     papers.forEach(function (p) {
       // p.status decides the little badge colour: live / new / draft
       var badgeClass = "badge badge--" + (p.status || "live");
+      // Authors line: from the "authors" array in papers-data.json.
+      var authors = (p.authors && p.authors.length) ? p.authors.join(", ") : "IEP Research Division";
+      // arXiv-style identifier shown on the card, e.g. IEP-2026.0001
+      var ident = identifier(p);
       html +=
         '<article class="paper-card reveal" data-id="' + esc(p.id) + '" ' +
         'data-category="' + esc(p.category) + '" ' +
-        'data-search="' + esc((p.title + " " + p.summary + " " + p.keywords.join(" ")).toLowerCase()) + '">' +
+        'data-search="' + esc((p.title + " " + p.summary + " " + authors + " " + p.keywords.join(" ")).toLowerCase()) + '">' +
           '<div class="paper-card__top">' +
-            '<span class="paper-card__num">' + esc(p.number) + '</span>' +
+            '<span class="paper-card__num">' + esc(ident) + '</span>' +
             '<span class="' + badgeClass + '">' + esc(cap(p.status || "live")) + '</span>' +
           '</div>' +
-          '<h3 class="paper-card__title">' + esc(p.title) + '</h3>' +
+          '<h3 class="paper-card__title"><a href="' + esc(p.readUrl) + '">' + esc(p.title) + '</a></h3>' +
+          '<p class="paper-card__authors"><i class="fas fa-user-pen"></i> ' + esc(authors) + '</p>' +
           '<p class="paper-card__summary">' + esc(p.summary) + '</p>' +
           '<ul class="paper-card__meta">' +
             '<li><i class="fas fa-tag"></i> ' + esc(p.category) + '</li>' +
             '<li><i class="fas fa-calendar"></i> ' + esc(p.date) + '</li>' +
             '<li><i class="fas fa-file-lines"></i> ' + esc(p.pages) + ' pages</li>' +
+            (p.version ? '<li><i class="fas fa-code-branch"></i> ' + esc(p.version) + '</li>' : '') +
           '</ul>' +
           '<div class="paper-card__actions">' +
             '<a class="btn btn--primary btn--sm" href="' + esc(p.readUrl) + '">Read online <i class="fas fa-arrow-right"></i></a>' +
-            '<a class="btn btn--secondary btn--sm" href="' + esc(p.pdfUrl) + '" download><i class="fas fa-file-pdf"></i> PDF</a>' +
+            '<a class="btn btn--secondary btn--sm" href="' + esc(p.pdfUrl) + '" download><i class="fas fa-file-arrow-down"></i> Download article (PDF)</a>' +
             '<a class="btn btn--ghost btn--sm" href="' + esc(p.mdUrl) + '" download><i class="fab fa-markdown"></i> Markdown</a>' +
           '</div>' +
         '</article>';
     });
     grid.innerHTML = html;
     observeReveals(grid.querySelectorAll(".reveal"));
+  }
+
+  // Standard preprint identifier from number + year, e.g. "Paper 01", 2026 -> IEP-2026.0001
+  function identifier(p) {
+    var num = (p.number || "").replace(/\D+/g, "") || "0001";
+    while (num.length < 4) num = "0" + num;
+    var year = String(p.date || "").slice(0, 4) || "2026";
+    return "IEP-" + year + "." + num;
   }
 
   // ---- 3. Search + category filters --------------------------------------
@@ -100,6 +114,13 @@
 
     if (searchBox) {
       searchBox.addEventListener("input", applyFilters);
+      // Deep links like index.html?q=privacy pre-fill the search box
+      // (used by the keyword chips on individual paper pages).
+      var params = new URLSearchParams(window.location.search);
+      if (params.get("q")) {
+        searchBox.value = params.get("q");
+        applyFilters();
+      }
     }
 
     function applyFilters() {

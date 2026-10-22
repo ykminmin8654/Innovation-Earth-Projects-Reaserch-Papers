@@ -32,13 +32,33 @@ def write(path, text):
         f.write(text)
     print("  wrote", path)
 
+# ---------------------------------------------------------------- small helpers
+MONTHS = ["January","February","March","April","May","June",
+          "July","August","September","October","November","December"]
+
+def nice_date(iso):
+    """'2026-10-22' -> 'October 22, 2026'. Anything else passes through."""
+    parts = str(iso).split("-")
+    if len(parts) == 3 and all(x.isdigit() for x in parts):
+        return f"{MONTHS[int(parts[1]) - 1]} {int(parts[2])}, {parts[0]}"
+    return str(iso)
+
+def escape(s):
+    """Minimal HTML-escaping for values dropped into the page template."""
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+def fm_plain(s):
+    """Strip markdown bold markers from a string (used for author lines)."""
+    return re.sub(r"\*\*(.+?)\*\*", r"\1", s)
+
 # ---------------------------------------------------------------- template
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>{title} - IEP Research Papers</title>
+<title>{title} - IEP Preprints</title>
 <meta name="description" content="{summary_meta}" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -46,7 +66,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body data-page="paper-detail">
+<body data-page="paper-detail" data-paper-id="{id}">
 
 <header class="nav">
   <div class="nav__inner">
@@ -63,18 +83,53 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 </header>
 
 <main>
-  <section class="section section--tint paper-detail">
+  <article class="section section--tint paper-detail">
     <div class="container paper">
       <p class="paper-detail__crumbs"><a href="../index.html"><i class="fas fa-arrow-left"></i> Back to paper library</a></p>
-      {body}
+
+      <!-- ======= PREPRINT HEADER (standard industry layout) ======= -->
+      <header class="paper-header reveal">
+        <span class="paper-header__series">Innovation Earth Projects &middot; Preprint</span>
+        {heading}
+        <p class="paper-header__authors"><i class="fas fa-user-pen"></i> {authors}</p>
+        <dl class="paper-header__badges">
+          <div><dt>Submitted</dt><dd>{date}</dd></div>
+          <div><dt>Category</dt><dd>{category}</dd></div>
+          <div><dt>Version</dt><dd>{version}</dd></div>
+          <div><dt>Pages</dt><dd>{pages}</dd></div>
+        </dl>
+      </header>
+
+      <!-- Abstract box: the first "## Abstract" section of the markdown
+           is moved up here automatically by build.py (see split_abstract). -->
+      {abstract_box}
+
+      <!-- Summary + metadata strip, filled at runtime by js/paper-page.js
+           from js/papers-data.json (keywords, identifier, citation). -->
+      <section class="pmeta-card reveal" aria-label="Paper summary and metadata">
+        <h2 class="pmeta-card__title"><i class="fas fa-circle-info"></i> Summary &amp; details</h2>
+        <p class="pmeta-card__text">{summary}</p>
+        <div id="paper-meta" class="pmeta"><!-- rows injected by js/paper-page.js --></div>
+        <div class="citation">
+          <span class="citation__label">Cite as</span>
+          <p id="citation-text" class="citation__text">&nbsp;</p>
+          <button id="copy-citation" class="btn btn--ghost btn--sm" type="button"><i class="fas fa-quote-left"></i> Copy citation</button>
+        </div>
+      </section>
+
+      <!-- ======= FULL ARTICLE (rendered from papers/<id>.md) ======= -->
+      <div class="paper-body">
+{body}
+      </div>
+
       <hr class="rule" />
       <div class="paper-detail__downloads">
-        <a class="btn btn--primary" href="../downloads/{id}.pdf" download><i class="fas fa-file-pdf"></i> Download PDF</a>
-        <a class="btn btn--secondary" href="../downloads/{id}.md" download><i class="fab fa-markdown"></i> Download Markdown</a>
+        <a class="btn btn--primary" href="../downloads/{id}.pdf" download><i class="fas fa-file-arrow-down"></i> Download article (PDF)</a>
+        <a class="btn btn--secondary" href="../downloads/{id}.md" download><i class="fab fa-markdown"></i> Download Markdown source</a>
         <a class="btn btn--ghost" href="https://innovationearthprojects.org/home/"><i class="fas fa-globe"></i> innovationearthprojects.org</a>
       </div>
     </div>
-  </section>
+  </article>
 </main>
 
 <footer class="footer">
@@ -85,9 +140,66 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 </footer>
 
 <script src="../js/main.js"></script>
+<script src="../js/paper-page.js"></script>
 </body>
 </html>
 """
+
+def split_abstract(md_text):
+    """Preprint-style layout helper.
+
+    Splits a paper's markdown into:
+      title_h1     -> the '# ...' line (rendered in the page header)
+      front_matter -> any bold 'key: value' lines right after the title
+                      (Type/Subject/Author blocks) - shown as metadata chips
+      abstract     -> the text under the first '## Abstract' heading, moved
+                      up into a highlighted box (standard preprint placement)
+      rest         -> everything else, rendered as the article body below
+
+    If a paper has no '## Abstract' section, abstract is None and the
+    builder falls back to putting everything in the body (nothing breaks).
+    """
+    lines = md_text.splitlines()
+    title_h1, i = None, 0
+    for idx, ln in enumerate(lines):
+        if ln.startswith("# "):
+            title_h1 = ln[2:].strip(); i = idx + 1; break
+    if title_h1 is None:
+        return None, "", None, md_text
+
+    # Front matter: consecutive non-empty lines of '**Key:** value' style.
+    front = []
+    while i < len(lines):
+        s = lines[i].strip()
+        if not s or s == "---":
+            i += 1; continue
+        if re.match(r"^\*\*.*?\*\*", s):
+            front.append(s); i += 1
+        else:
+            break
+    fm_html = ""
+    if front:
+        chips = []
+        for f_ in front:
+            txt = re.sub(r"\*\*(.+?)\*\*", r"\1", f_)  # strip bold markers
+            chips.append('<span class="chip chip--fm">' + txt.strip() + "</span>")
+        fm_html = '<div class="paper-header__front">' + " ".join(chips) + "</div>"
+
+    rest_lines = lines[i:]
+    full_rest = "\n".join(rest_lines)
+
+    # Pull out the Abstract section (## Abstract ... up to next ## heading).
+    m = re.search(r"^## Abstract\s*$", full_rest, re.M)
+    abstract_md = None
+    if m:
+        start = m.end()
+        nxt = re.search(r"^## ", full_rest[start:], re.M)
+        end = start + (nxt.start() if nxt else len(full_rest))
+        abstract_md = full_rest[start:end].strip().rstrip("-").strip()
+        full_rest = full_rest[:m.start()] + full_rest[end:]
+
+    return title_h1, fm_html, abstract_md, full_rest.strip()
+
 
 def md_to_html(md_text):
     """Markdown -> HTML using the 'markdown' package if installed,
@@ -212,11 +324,27 @@ def main():
             continue
         md_text = read(md_path)
 
-        # 1. HTML page
-        body = md_to_html(md_text)
+        # 1. HTML page (preprint layout: header + abstract box + body)
+        title_h1, fm_html, abstract_md, rest_md = split_abstract(md_text)
+        # Escape the H1 text; keep markdown syntax intact for the body so it
+        # still renders (**bold**, links, tables all keep working).
+        heading = f"<h1 class='h1'>{escape(fm_plain(title_h1))}</h1>" if title_h1 else ""
+        authors = ", ".join(p.get("authors") or ["IEP Research Division"])
+        date_fmt = nice_date(p.get("date", ""))
+        if abstract_md:
+            abstract_box = ("<aside class='abstract-box reveal'><h2 class='abstract-box__title'>"
+                            "<i class='fas fa-align-left'></i> Abstract</h2>"
+                            + md_to_html(abstract_md) + "</aside>")
+        else:
+            abstract_box = ""
+        body = md_to_html(rest_md)
         page = PAGE_TEMPLATE.format(
             title=p["title"], summary_meta=p["summary"].replace('"', "&quot;"),
-            id=pid, body=body)
+            id=pid, heading=heading, authors=escape(fm_plain(authors)),
+            date=date_fmt, category=escape(p["category"]),
+            version=escape(p.get("version", "v1.0")), pages=p.get("pages", "-"),
+            abstract_box=fm_html + "\n      " + abstract_box,
+            summary=p["summary"], body=body)
         write(f"papers/{pid}.html", page)
 
         # 2. Copy markdown into downloads/ for site visitors

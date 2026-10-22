@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students - IEP Research Papers</title>
+<title>Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students - IEP Preprints</title>
 <meta name="description" content="A short working paper reviewing classroom observations and HCI literature on account-gating, email capture, and onboarding flows as barriers to educational tool adoption for ages 14-18." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body data-page="paper-detail">
+<body data-page="paper-detail" data-paper-id="paper-02-zero-friction">
 
 <header class="nav">
   <div class="nav__inner">
@@ -28,17 +28,43 @@
 </header>
 
 <main>
-  <section class="section section--tint paper-detail">
+  <article class="section section--tint paper-detail">
     <div class="container paper">
       <p class="paper-detail__crumbs"><a href="../index.html"><i class="fas fa-arrow-left"></i> Back to paper library</a></p>
-      <h1>Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students</h1>
-<p><strong>Type:</strong> Working paper / literature review with classroom observations
-<strong>Subject area:</strong> Human–computer interaction, K–12 educational technology
-<strong>Author:</strong> Prepared for the IEP research division
-<strong>Status:</strong> Draft v1 — intended as a living document; feedback welcome</p>
-<hr />
-<h2>Abstract</h2>
-<p>Educational software routinely requires accounts, email verification, and onboarding flows before a student can use it. This working paper reviews HCI literature on friction and dark patterns alongside informal observations from secondary-school classrooms to argue that signup walls measurably reduce tool adoption among students aged 14–18, and that browser-local, no-account tools are a practical alternative. We propose four lightweight design commitments ("the ten-second rule") and describe how they were applied in practice by student-run studios such as Innovation Earth Projects.</p>
+
+      <!-- ======= PREPRINT HEADER (standard industry layout) ======= -->
+      <header class="paper-header reveal">
+        <span class="paper-header__series">Innovation Earth Projects &middot; Preprint</span>
+        <h1 class='h1'>Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students</h1>
+        <p class="paper-header__authors"><i class="fas fa-user-pen"></i> IEP Research Division</p>
+        <dl class="paper-header__badges">
+          <div><dt>Submitted</dt><dd>October 22, 2026</dd></div>
+          <div><dt>Category</dt><dd>Education Research</dd></div>
+          <div><dt>Version</dt><dd>v1.0 (draft)</dd></div>
+          <div><dt>Pages</dt><dd>9</dd></div>
+        </dl>
+      </header>
+
+      <!-- Abstract box: the first "## Abstract" section of the markdown
+           is moved up here automatically by build.py (see split_abstract). -->
+      <div class="paper-header__front"><span class="chip chip--fm">Type: Working paper / literature review with classroom observations</span> <span class="chip chip--fm">Subject area: Human–computer interaction, K–12 educational technology</span> <span class="chip chip--fm">Author: Prepared for the IEP research division</span> <span class="chip chip--fm">Status: Draft v1 — intended as a living document; feedback welcome</span></div>
+      <aside class='abstract-box reveal'><h2 class='abstract-box__title'><i class='fas fa-align-left'></i> Abstract</h2><p>Educational software routinely requires accounts, email verification, and onboarding flows before a student can use it. This working paper reviews HCI literature on friction and dark patterns alongside informal observations from secondary-school classrooms to argue that signup walls measurably reduce tool adoption among students aged 14–18, and that browser-local, no-account tools are a practical alternative. We propose four lightweight design commitments ("the ten-second rule") and describe how they were applied in practice by student-run studios such as Innovation Earth Projects.</p></aside>
+
+      <!-- Summary + metadata strip, filled at runtime by js/paper-page.js
+           from js/papers-data.json (keywords, identifier, citation). -->
+      <section class="pmeta-card reveal" aria-label="Paper summary and metadata">
+        <h2 class="pmeta-card__title"><i class="fas fa-circle-info"></i> Summary &amp; details</h2>
+        <p class="pmeta-card__text">A short working paper reviewing classroom observations and HCI literature on account-gating, email capture, and onboarding flows as barriers to educational tool adoption for ages 14-18.</p>
+        <div id="paper-meta" class="pmeta"><!-- rows injected by js/paper-page.js --></div>
+        <div class="citation">
+          <span class="citation__label">Cite as</span>
+          <p id="citation-text" class="citation__text">&nbsp;</p>
+          <button id="copy-citation" class="btn btn--ghost btn--sm" type="button"><i class="fas fa-quote-left"></i> Copy citation</button>
+        </div>
+      </section>
+
+      <!-- ======= FULL ARTICLE (rendered from papers/<id>.md) ======= -->
+      <div class="paper-body">
 <h2>1. Introduction</h2>
 <p>The typical adoption path for an ed-tech tool is: teacher selects tool → students create accounts (often with school email) → students wait for verification → students navigate onboarding → students finally use the tool. Each arrow in this chain loses users. For teenage students using tools opportunistically — five minutes before a deadline, one study period at lunch — the cumulative friction is often decisive.</p>
 <p>This paper asks a narrow question: <strong>how much of the observed non-adoption of educational tools is attributable to access friction rather than to the tool's usefulness?</strong></p>
@@ -78,14 +104,16 @@
 <li>Livingstone, S., &amp; Helsper, E. J. (2007). Gradations in Children's Online Skills.</li>
 <li>Papert, S. (1980). <em>Mindstorms: Children, Computers, and Powerful Ideas.</em></li>
 </ul>
+      </div>
+
       <hr class="rule" />
       <div class="paper-detail__downloads">
-        <a class="btn btn--primary" href="../downloads/paper-02-zero-friction.pdf" download><i class="fas fa-file-pdf"></i> Download PDF</a>
-        <a class="btn btn--secondary" href="../downloads/paper-02-zero-friction.md" download><i class="fab fa-markdown"></i> Download Markdown</a>
+        <a class="btn btn--primary" href="../downloads/paper-02-zero-friction.pdf" download><i class="fas fa-file-arrow-down"></i> Download article (PDF)</a>
+        <a class="btn btn--secondary" href="../downloads/paper-02-zero-friction.md" download><i class="fab fa-markdown"></i> Download Markdown source</a>
         <a class="btn btn--ghost" href="https://innovationearthprojects.org/home/"><i class="fas fa-globe"></i> innovationearthprojects.org</a>
       </div>
     </div>
-  </section>
+  </article>
 </main>
 
 <footer class="footer">
@@ -96,5 +124,6 @@
 </footer>
 
 <script src="../js/main.js"></script>
+<script src="../js/paper-page.js"></script>
 </body>
 </html>
