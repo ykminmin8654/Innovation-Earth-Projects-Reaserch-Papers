@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students - IEP Research Papers</title>
+<meta name="description" content="A short working paper reviewing classroom observations and HCI literature on account-gating, email capture, and onboarding flows as barriers to educational tool adoption for ages 14-18." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body data-page="paper-detail">
+
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__brand" href="https://innovationearthprojects.org/home/">
+      <span class="nav__mark"><i class="fas fa-globe"></i></span>
+      <span class="nav__wordmark">Innovation Earth Projects</span>
+    </a>
+    <nav class="nav__links">
+      <a href="../index.html">Library</a>
+      <a href="https://innovationearthprojects.org/products">Tools</a>
+      <a href="https://innovationearthprojects.org/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section section--tint paper-detail">
+    <div class="container paper">
+      <p class="paper-detail__crumbs"><a href="../index.html"><i class="fas fa-arrow-left"></i> Back to paper library</a></p>
+      <h1>Zero Friction Learning: Why Signup Walls Reduce Tool Adoption Among Teenage Students</h1>
+<p><strong>Type:</strong> Working paper / literature review with classroom observations
+<strong>Subject area:</strong> Human–computer interaction, K–12 educational technology
+<strong>Author:</strong> Prepared for the IEP research division
+<strong>Status:</strong> Draft v1 — intended as a living document; feedback welcome</p>
+<hr />
+<h2>Abstract</h2>
+<p>Educational software routinely requires accounts, email verification, and onboarding flows before a student can use it. This working paper reviews HCI literature on friction and dark patterns alongside informal observations from secondary-school classrooms to argue that signup walls measurably reduce tool adoption among students aged 14–18, and that browser-local, no-account tools are a practical alternative. We propose four lightweight design commitments ("the ten-second rule") and describe how they were applied in practice by student-run studios such as Innovation Earth Projects.</p>
+<h2>1. Introduction</h2>
+<p>The typical adoption path for an ed-tech tool is: teacher selects tool → students create accounts (often with school email) → students wait for verification → students navigate onboarding → students finally use the tool. Each arrow in this chain loses users. For teenage students using tools opportunistically — five minutes before a deadline, one study period at lunch — the cumulative friction is often decisive.</p>
+<p>This paper asks a narrow question: <strong>how much of the observed non-adoption of educational tools is attributable to access friction rather than to the tool's usefulness?</strong></p>
+<h2>2. Background: friction, dark patterns, and required effort</h2>
+<p>Friction in interface design is any element that slows or complicates task completion. Dark patterns are cases where friction is deliberately asymmetric — easy to sign up, hard to cancel; hidden prices; forced data capture (Brignull, 2011; Gray et al., 2018). In K–12 contexts, account requirements also intersect with privacy regulation (FERPA, COPPA) and parental concern, raising the stakes of every field a tool asks for (Gilliam, 2020).</p>
+<p>Adolescent users are not indifferent to this. Survey work has repeatedly found teens practice "casual privacy management" — they will trade data for convenience, but express strong preference for tools that simply do not ask (Lenhart, 2009; Livingstone &amp; Helsper, 2007).</p>
+<h2>3. Observations</h2>
+<p>Between 2025 and 2026, members of a student software studio observed usage patterns across three informal settings: a high-school coding club, two science-fair prep groups, and general homework use among classmates. Recurring findings:</p>
+<ol>
+<li><strong>Reflexive avoidance of new accounts.</strong> Students who already had "too many logins" rejected tools requiring another, even when the tool was recommended by peers.</li>
+<li><strong>Email-capture distrust.</strong> Requests for an email address were commonly met with throwaway addresses or abandonment, poisoning the tool's own analytics.</li>
+<li><strong>Link-only success.</strong> Tools shared as a bare URL, usable immediately, saw repeat use within the same week; otherwise identical tools behind a signup wall did not.</li>
+<li><strong>Teacher workaround behaviour.</strong> Teachers reported scheduling "account creation days" purely to satisfy vendor requirements — institutional friction that adds no learning value.</li>
+</ol>
+<p>These are anecdotal, single-site observations, not a controlled study; they are reported here to motivate proper empirical work.</p>
+<h2>4. The ten-second rule</h2>
+<p>From the above we distil four design commitments for student-facing tools:</p>
+<ul>
+<li><strong>Open a link, start working.</strong> No account required for core functionality.</li>
+<li><strong>Show price before promise.</strong> If anything costs money, say so on the listing card.</li>
+<li><strong>Local by default.</strong> Compute in the browser; nothing leaves the device unless the user exports it.</li>
+<li><strong>Optional persistence.</strong> Saving progress may require an account, but saving must never be required to <em>use</em>.</li>
+</ul>
+<p>A tool satisfies the rule if a first-time student can produce real output within ten seconds of opening the link.</p>
+<h2>5. Discussion</h2>
+<p>The rule reframes the classic growth funnel. Commercial ed-tech optimises for captured identities (accounts, emails, rosters); learner-originated studios can instead optimise for <em>time-to-value</em>, because they carry no advertising or data-monetisation business model that requires identity capture. This aligns with constructionist pedagogy — tools should disappear into the act of making (Papert, 1980) — and with Privacy by Design's "privacy as default setting" principle (Cavoukian, 2011).</p>
+<p>Counterpoints worth testing: teachers sometimes <em>need</em> account-based dashboards for grading; friction occasionally signals seriousness and reduces misuse; and browser-local tools cannot sync across devices. None of these require email capture of minors as the default path, but they do require optional, clearly-scoped features.</p>
+<h2>6. Limitations and next steps</h2>
+<p>Sample size is effectively zero for statistical purposes; all claims are directional. Next steps: (a) instrument a paired A/B deployment of one tool with and without a signup wall in a willing classroom, (b) replicate with an external school district, (c) audit third-party requests made by "no tracking" tools to verify the claim technically.</p>
+<h2>References</h2>
+<ul>
+<li>Brignull, H. (2011). <em>Dark Patterns: Deception vs. Honesty in UI Design.</em></li>
+<li>Cavoukian, A. (2011). <em>Privacy By Design: The 7 Foundational Principles.</em></li>
+<li>Gilliam, B. (2020). <em>Google and the Life of the Mind</em> (internal review).</li>
+<li>Gray, C. M., Pinch, A., Nieva, G., &amp; Davison, T. (2018). Dark Patterns. <em>PACM HCI</em>, 2(CSCW).</li>
+<li>Lenhart, A. (2009). <em>Teens and Privacy Management.</em> Pew Internet.</li>
+<li>Livingstone, S., &amp; Helsper, E. J. (2007). Gradations in Children's Online Skills.</li>
+<li>Papert, S. (1980). <em>Mindstorms: Children, Computers, and Powerful Ideas.</em></li>
+</ul>
+      <hr class="rule" />
+      <div class="paper-detail__downloads">
+        <a class="btn btn--primary" href="../downloads/paper-02-zero-friction.pdf" download><i class="fas fa-file-pdf"></i> Download PDF</a>
+        <a class="btn btn--secondary" href="../downloads/paper-02-zero-friction.md" download><i class="fab fa-markdown"></i> Download Markdown</a>
+        <a class="btn btn--ghost" href="https://innovationearthprojects.org/home/"><i class="fas fa-globe"></i> innovationearthprojects.org</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__brand"><i class="fas fa-globe" style="color:var(--teal)"></i> Innovation Earth Projects - Research Papers</div>
+    <p class="footer__tagline">Published by the research division of Innovation Earth Projects. Free to read, download, and cite.</p>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
