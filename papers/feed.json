@@ -6,15 +6,15 @@
     {
       "slug": "paper-01-iep-case-study",
       "title": "Paper 01 Iep Case Study",
-      "pdfUrl": "papers/paper-01-iep-case-study.pdf",
-      "mirrorUrl": "downloads/paper-01-iep-case-study.pdf",
+      "pdfUrl": "https://researchpapers.innovationearthprojects.org/papers/paper-01-iep-case-study.pdf",
+      "mirrorUrl": "https://researchpapers.innovationearthprojects.org/downloads/paper-01-iep-case-study.pdf",
       "sizeKb": 16
     },
     {
       "slug": "paper-02-zero-friction",
       "title": "Paper 02 Zero Friction",
-      "pdfUrl": "papers/paper-02-zero-friction.pdf",
-      "mirrorUrl": "downloads/paper-02-zero-friction.pdf",
+      "pdfUrl": "https://researchpapers.innovationearthprojects.org/papers/paper-02-zero-friction.pdf",
+      "mirrorUrl": "https://researchpapers.innovationearthprojects.org/downloads/paper-02-zero-friction.pdf",
       "sizeKb": 6
     }
   ]

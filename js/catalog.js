@@ -110,7 +110,7 @@
               version: "1.0",
               pages: null,
               sizeKb: Math.round((e.size || 0) / 1024),
-              pdfUrl: "papers/" + encodeURIComponent(e.name),
+              pdfUrl: "/papers/" + encodeURIComponent(e.name),
               direct: true   // row came from the folder listing itself
             };
           });
