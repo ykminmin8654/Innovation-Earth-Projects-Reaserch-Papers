@@ -1,0 +1,4 @@
+{
+  "$comment": "The ONLY settings file on this site. Tells the download page which GitHub repo's papers/ folder to list automatically. Changing owner/repo here re-points the whole site.",
+  "github": { "owner": "ykminmin8654", "repo": "Innovation-Earth-Projects-Reaserch-Papers" }
+}

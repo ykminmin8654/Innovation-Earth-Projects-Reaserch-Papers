@@ -160,14 +160,13 @@
     <div class="container container--narrow">
       <header class="section__head reveal">
         <span class="eyebrow">For authors</span>
-        <h2 class="section__title">How a paper gets on the download list</h2>
-        <p class="section__sub">Plain files, one build script — everything is auditable.</p>
+        <h2 class="section__title">Publishing a paper takes one file</h2>
+        <p class="section__sub">No forms, no build step, no extra files of any kind.</p>
       </header>
       <ol class="num-list" style="font-size:1rem">
-        <li><strong>Upload the paper as a PDF.</strong> Drop your finished article at <code>papers/&lt;id&gt;.pdf</code>. That file is the canonical artifact visitors download &mdash; it is never modified or regenerated.</li>
-        <li><strong>Add it to the catalog.</strong> One entry in <code>js/papers-data.json</code> — title, authors, summary, category, keywords, date, version, pages.</li>
-        <li><strong>Run the build.</strong> <code>python3 build.py --from-pdf &lt;id&gt;</code> extracts the text once so a styled "read in browser" page can be generated, then <code>python3 build.py</code> copies your PDF into <code>downloads/</code>, rebuilds the ZIP bundle, and refreshes <code>papers/feed.json</code>. Both pages read from that feed automatically — no HTML edits needed.</li>
-        <li><strong>Push to GitHub</strong> — GitHub Pages serves the updated download list automatically.</li>
+        <li><strong>Upload the PDF.</strong> Put your finished paper at <code>papers/&lt;name&gt;.pdf</code> in the GitHub repo &mdash; that is the entire publishing process.</li>
+        <li><strong>It appears automatically.</strong> The download list reads the <code>papers/</code> folder live from GitHub every time someone opens it, so the new row shows up as soon as the commit is pushed. Titles come from the file name; links point straight at your PDF.</li>
+        <li><strong>Nothing else to maintain.</strong> There are no markdown sources, no catalog entries, and no generated HTML pages per paper. The only config on the whole site is one two-line file (<code>js/site-config.json</code>) naming this repo.</li>
       </ol>
     </div>
   </section>

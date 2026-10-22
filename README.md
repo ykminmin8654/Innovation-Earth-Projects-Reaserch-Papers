@@ -1,72 +1,67 @@
-# Innovation Earth Projects — Research Papers
+# IEP Research Papers — automatic PDF download site
 
-A small static **download site** (GitHub Pages) for research papers from the
-research division of [Innovation Earth Projects](https://innovationearthprojects.org/home/).
-The site is exactly two pages: an **About page** (`index.html`) explaining what
-the papers are and who writes them, and a separate **Downloads page**
-(`downloads/`) holding a searchable list of raw PDF download links. No
-accounts, no tracking, no admin panel — the main website simply links here.
+Part of [innovationearthprojects.org](https://innovationearthprojects.org/home/).
+Live at: https://researchpapers.innovationearthprojects.org
 
-## File map (what a reviewer/auditor needs to know)
+## The one rule
 
-```
-index.html                  ← About page: what this site is, who writes the papers
-downloads/              ← Searchable list of raw PDF download links (the files page)
-css/styles.css              ← ALL styling; numbered sections in the header comment
-js/papers-data.json         ← THE PAPER LIST (single source of truth) — edit this to publish
-js/downloads.js             ← renders the download rows on downloads/ + search/filter
-js/paper-page.js            ← fills the preprint header on a paper page: metadata, keywords, citation
-js/main.js                  ← shared scroll-reveal animation only
-papers/<id>.pdf             ← THE PAPER itself, uploaded by the author (canonical download)
-papers/<id>.md              ← extracted text (generated once via --from-pdf; used for the web page)
-papers/<id>/index.html (URL: /papers/<id>/)            ← GENERATED readable web page (do not hand-edit; rebuilt by build.py)
-papers/feed.json            ← GENERATED machine-readable catalog (for the main site to fetch/link)
-downloads/<id>.pdf          ← GENERATED download copy
-downloads/<id>.md           ← GENERATED copy of the markdown source for download
-downloads/all-papers.zip    ← GENERATED bundle of every paper
-build.py                    ← the generator: markdown -> html + pdf + zip + feed.json
-```
+**A paper exists if there is a PDF in `papers/`.** That's the whole system.
 
-Design tokens (teal #008080 / cyan #00CED1 / lime #32CD32, Inter + JetBrains Mono,
-animated hero orbs, sticky glass nav) are replicated from innovationearthprojects.org
-so this site visually links into the main IEP website.
+To publish: upload `papers/<name>.pdf` to this repo (drag-and-drop on
+github.com works), commit, push. Within seconds the file appears as a
+download row on `/downloads/` — no JSON edits, no markdown, no build
+step, no extra files. The list is generated live by reading the GitHub
+API for whatever is in the folder right now (`js/catalog.js`).
 
-## How to publish a new paper (4 steps, no HTML editing)
+## Pages
 
-1. Upload the paper as a PDF: `papers/paper-03-my-topic.pdf` (the canonical download file)
-   (a `# Title`, a `## Abstract` section, then the body; optional YAML
-   front matter overrides fields from step 2)
-2. Add one entry to `js/papers-data.json` (title, authors, summary, category,
-   date, version, pages, keywords, id).
-3. Run the build: `pip install pypdf markdown && python3 build.py --from-pdf paper-03-my-topic && python3 build.py`
-   (`--from-pdf` extracts text once into `papers/<id>.md` for the read-in-browser page; your PDF is served verbatim.)
-4. Commit + push → GitHub Pages updates automatically.
+| URL | What it is |
+|---|---|
+| `/` | About page — what this site is, links back to the main IEP site |
+| `/downloads/` | Searchable list of raw PDF download links, built automatically from `papers/` |
 
-Everything generated (`.html`, `.pdf`, `.zip`, `feed.json`) is reproducible
-from the `.md` sources plus the JSON list — which means an auditor can
-regenerate the site and diff it against what is deployed.
-
-## Local preview
+## Files
 
 ```
-python3 -m http.server 8000   # then open http://localhost:8000
+index.html                  ← About page (static, hand-written)
+downloads/index.html        ← Download-list page (static shell; rows injected by JS)
+css/styles.css              ← ALL styling (numbered sections in header comment)
+js/site-config.json         ← THE ONLY CONFIG: which GitHub repo to list
+js/catalog.js               ← asks GitHub what PDFs are in papers/, exposes loadPapers()
+js/downloads.js             ← renders one download row per PDF + search/filter
+js/main.js                  ← shared scroll-reveal animation
+papers/<name>.pdf           ← YOUR UPLOADS GO HERE. This IS the publication.
+papers/feed.json            ← optional static fallback snapshot (see build.py)
+downloads/<name>.pdf        ← optional mirror copies for stable short links
+downloads/all-papers.zip    ← optional "download everything" bundle
+build.py                    ← OPTIONAL helper that regenerates the mirror/zip/snapshot
+CNAME                       ← custom domain for GitHub Pages
 ```
-(A plain file:// open works too, but some browsers block fetch() of the JSON locally.)
+
+## How the automatic list works (for auditors)
+
+1. A visitor opens `/downloads/`.
+2. `js/catalog.js` reads `js/site-config.json` → owner/repo name.
+3. It calls `https://api.github.com/repos/<owner>/<repo>/contents/papers`.
+4. Every `*.pdf` entry becomes exactly one row; the link points straight
+   at `papers/<name>.pdf` (the raw file in this repo). Titles come from
+   the filename; dates from GitHub's last-modified timestamp.
+5. If the API is unreachable, it falls back to `papers/feed.json`.
+
+The script never writes anything and shows nothing that isn't a real
+file in the repo — you can always verify the list by opening the
+`papers/` folder on GitHub yourself.
+
+## Optional niceties
+
+`python3 build.py` mirrors every PDF into `downloads/`, rebuilds
+`all-papers.zip`, and refreshes the `feed.json` fallback. Purely for
+stable short links and offline resilience — run it whenever, or never.
+(`build.py --clean` additionally removes stale mirrored PDFs.)
 
 ## Linking from the main website
 
-`papers/feed.json` is a plain, CORS-friendly catalog of everything published
-here: slug, title, description, authors, category, keywords, date, version,
-pages, and absolute base URLs for reading and downloading each paper. The
-main site (innovationearthprojects.org) can fetch it to show a papers list
-or link directly to any PDF:
-
-```
-https://researchpapers.innovationearthprojects.org/papers/feed.json
-https://researchpapers.innovationearthprojects.org/downloads/<id>.pdf
-```
-
-There is deliberately NO publishing/admin surface on this site. Papers are
-added only through the repo (edit files → run build.py → push), so every
-change has a git history an auditor can follow: `git log -- js/papers-data.json papers/`.
-
+- List page: `https://researchpapers.innovationearthprojects.org/downloads/`
+- Any PDF: `.../papers/<name>.pdf` (canonical) or `.../downloads/<name>.pdf` (mirror)
+- Everything at once: `.../downloads/all-papers.zip`
+- Machine-readable snapshot: `.../papers/feed.json`
