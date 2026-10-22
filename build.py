@@ -11,7 +11,7 @@ Usage:
 WHAT IT DOES, STEP BY STEP:
   1. Reads js/papers-data.json (the list of all papers).
   2. For each paper, reads papers/<id>.md  (markdown source = editable truth).
-  3. Writes papers/<id>.html               (styled web page, shared css/js).
+  3. Writes papers/<id>/index.html (URL: /papers/<id>/)               (styled web page, shared css/js).
   4. Writes downloads/<id>.pdf             (print version; needs fpdf2,
                                             otherwise skipped with a warning).
   5. Copies downloads/<id>.md so it can be downloaded from the site too.
@@ -153,7 +153,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <span class="nav__wordmark">Innovation Earth Projects</span>
     </a>
     <nav class="nav__links">
-      <a href="../index.html">Library</a>
+      <a href="../">About</a>
+      <a href="../downloads/">Downloads</a>
       <a href="https://innovationearthprojects.org/products">Tools</a>
       <a href="https://innovationearthprojects.org/about">About</a>
     </nav>
@@ -163,7 +164,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <main>
   <article class="section section--tint paper-detail">
     <div class="container paper">
-      <p class="paper-detail__crumbs"><a href="../index.html"><i class="fas fa-arrow-left"></i> Back to paper library</a></p>
+      <p class="paper-detail__crumbs"><a href="../downloads/"><i class="fas fa-arrow-left"></i> Back to downloads</a></p>
 
       <!-- ======= PREPRINT HEADER (standard industry layout) ======= -->
       <header class="paper-header reveal">
@@ -436,7 +437,7 @@ def main():
             version=escape(raw_version), pages=p.get("pages", "-"),
             abstract_box=fm_html + "\n      " + abstract_box,
             summary=p["summary"], body=body)
-        write(f"papers/{pid}.html", page)
+        write(f"papers/{pid}/index.html", page)
 
         # 2. Copy markdown into downloads/ for site visitors
         os.makedirs(os.path.join(ROOT, "downloads"), exist_ok=True)
@@ -490,7 +491,7 @@ def main():
                 "version": str(b.get("version", "1.0")).lstrip("vV"),
                 "pages": b.get("pages", "-"),
                 "pricing": b.get("pricing", "Free"),
-                "readUrl": f"papers/{b['id']}.html",
+                "readUrl": f"papers/{b['id']}/",
                 "pdfUrl": f"downloads/{b['id']}.pdf",
                 "mdUrl": f"downloads/{b['id']}.md",
             } for b in built

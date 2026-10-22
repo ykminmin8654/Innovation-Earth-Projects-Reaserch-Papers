@@ -3,7 +3,7 @@
    ------------------------------------------------------------
    WHAT THIS FILE DOES (plain-English summary for reviewers):
    1. Looks at the URL to work out which paper is being viewed
-      (e.g. papers/paper-01-iep-case-study.html -> id
+      (e.g. papers/paper-01-iep-case-study/ -> id
       "paper-01-iep-case-study").
    2. Finds that paper's entry in js/papers-data.json.
    3. Fills in the metadata strip on the page: authors, date,
@@ -69,7 +69,7 @@
       html += '<div class="pmeta__row"><span class="pmeta__label"><i class="fas fa-keywords"></i> Keywords</span>' +
               '<span class="pmeta__value">';
       p.keywords.forEach(function (k) {
-        html += '<a class="chip" href="../index.html?q=' + encodeURIComponent(k) + '">' + esc(k) + "</a> ";
+        html += '<a class="chip" href="../downloads/?q=' + encodeURIComponent(k) + '">' + esc(k) + "</a> ";
       });
       html += "</span></div>";
     }

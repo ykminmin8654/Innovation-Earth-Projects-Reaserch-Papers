@@ -4,21 +4,21 @@ A small static **download site** (GitHub Pages) for research papers from the
 research division of [Innovation Earth Projects](https://innovationearthprojects.org/home/).
 The site is exactly two pages: an **About page** (`index.html`) explaining what
 the papers are and who writes them, and a separate **Downloads page**
-(`downloads.html`) holding a searchable list of raw PDF download links. No
+(`downloads/`) holding a searchable list of raw PDF download links. No
 accounts, no tracking, no admin panel — the main website simply links here.
 
 ## File map (what a reviewer/auditor needs to know)
 
 ```
 index.html                  ← About page: what this site is, who writes the papers
-downloads.html              ← Searchable list of raw PDF download links (the files page)
+downloads/              ← Searchable list of raw PDF download links (the files page)
 css/styles.css              ← ALL styling; numbered sections in the header comment
 js/papers-data.json         ← THE PAPER LIST (single source of truth) — edit this to publish
-js/downloads.js             ← renders the download rows on downloads.html + search/filter
+js/downloads.js             ← renders the download rows on downloads/ + search/filter
 js/paper-page.js            ← fills the preprint header on a paper page: metadata, keywords, citation
 js/main.js                  ← shared scroll-reveal animation only
 papers/<id>.md              ← paper SOURCE in Markdown (this is what authors write/edit)
-papers/<id>.html            ← GENERATED readable web page (do not hand-edit; rebuilt by build.py)
+papers/<id>/index.html (URL: /papers/<id>/)            ← GENERATED readable web page (do not hand-edit; rebuilt by build.py)
 papers/feed.json            ← GENERATED machine-readable catalog (for the main site to fetch/link)
 downloads/<id>.pdf          ← GENERATED download copy
 downloads/<id>.md           ← GENERATED copy of the markdown source for download

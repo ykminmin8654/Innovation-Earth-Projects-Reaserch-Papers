@@ -27,7 +27,7 @@
       "version": "1.0",
       "pages": 14,
       "pricing": "Free",
-      "readUrl": "papers/paper-01-iep-case-study.html",
+      "readUrl": "papers/paper-01-iep-case-study/",
       "pdfUrl": "downloads/paper-01-iep-case-study.pdf",
       "mdUrl": "downloads/paper-01-iep-case-study.md"
     },
@@ -51,7 +51,7 @@
       "version": "1.0 (draft)",
       "pages": 9,
       "pricing": "Free",
-      "readUrl": "papers/paper-02-zero-friction.html",
+      "readUrl": "papers/paper-02-zero-friction/",
       "pdfUrl": "downloads/paper-02-zero-friction.pdf",
       "mdUrl": "downloads/paper-02-zero-friction.md"
     }

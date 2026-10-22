@@ -1,5 +1,5 @@
 /* ============================================================
-   downloads.js — PDF download list page (downloads.html)
+   downloads.js — PDF download list page (downloads/)
    ------------------------------------------------------------
    WHAT THIS FILE DOES (plain-English summary for reviewers):
    1. Fetches the paper catalog — papers/feed.json if present
@@ -10,7 +10,7 @@
       no dialogs — clicking "PDF" starts the download.
    3. Wires up the search box and category filter buttons so only
       matching rows stay visible.
-   4. Supports deep links like downloads.html?q=privacy (pre-fills
+   4. Supports deep links like downloads/?q=privacy (pre-fills
       the search box) so other sites can link into a filtered view.
 
    This page never needs editing when a paper is added — the JSON
@@ -22,9 +22,12 @@
 
   // ---- 1. Load the paper list -------------------------------------------
   function loadCatalog() {
-    return fetch("papers/feed.json", { cache: "no-store" })
+    // Resolve the feed URL from the page's own location so this works both
+    // at /downloads/ (legacy) and /downloads/ (clean URL, index.html).
+    var base = window.location.href.replace(/index\.html$/, "").replace(/[^/]*$/, "");
+    return fetch(base + "../papers/feed.json", { cache: "no-store" })
       .then(function (res) { if (!res.ok) throw new Error("no feed"); return res.json(); })
-      .catch(function () { return fetch("js/papers-data.json").then(function (r) {
+      .catch(function () { return fetch(base + "../js/papers-data.json").then(function (r) {
         if (!r.ok) throw new Error("Could not load the paper catalog (HTTP " + r.status + ")");
         return r.json();
       }); });
