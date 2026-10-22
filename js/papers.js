@@ -64,7 +64,7 @@
             '<li><i class="fas fa-tag"></i> ' + esc(p.category) + '</li>' +
             '<li><i class="fas fa-calendar"></i> ' + esc(p.date) + '</li>' +
             '<li><i class="fas fa-file-lines"></i> ' + esc(p.pages) + ' pages</li>' +
-            (p.version ? '<li><i class="fas fa-code-branch"></i> ' + esc(p.version) + '</li>' : '') +
+            (p.version ? '<li><i class="fas fa-code-branch"></i> v' + esc(String(p.version).replace(/^v/i, "")) + '</li>' : '') +
           '</ul>' +
           '<div class="paper-card__actions">' +
             '<a class="btn btn--primary btn--sm" href="' + esc(p.readUrl) + '">Read online <i class="fas fa-arrow-right"></i></a>' +

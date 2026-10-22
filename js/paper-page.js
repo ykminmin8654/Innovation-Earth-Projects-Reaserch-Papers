@@ -53,7 +53,8 @@
       { icon: "fa-tag", label: "Category", value: p.category },
       { icon: "fa-file-lines", label: "Length", value: p.pages + " pages" }
     ];
-    if (p.version) rows.push({ icon: "fa-code-branch", label: "Version", value: p.version });
+    // Normalise so a stored "v1.0" doesn't render as "vv1.0" next to the literal v prefix.
+    if (p.version) rows.push({ icon: "fa-code-branch", label: "Version", value: "v" + String(p.version).replace(/^v/i, "") });
 
     var html = "";
     rows.forEach(function (r) {

@@ -95,7 +95,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
         <dl class="paper-header__badges">
           <div><dt>Submitted</dt><dd>{date}</dd></div>
           <div><dt>Category</dt><dd>{category}</dd></div>
-          <div><dt>Version</dt><dd>{version}</dd></div>
+          <div><dt>Version</dt><dd>v{version}</dd></div>
           <div><dt>Pages</dt><dd>{pages}</dd></div>
         </dl>
       </header>
@@ -338,11 +338,13 @@ def main():
         else:
             abstract_box = ""
         body = md_to_html(rest_md)
+        # Normalise version so the template's literal "v" prefix doesn't double it
+        raw_version = str(p.get("version", "1.0")).lstrip("vV")
         page = PAGE_TEMPLATE.format(
             title=p["title"], summary_meta=p["summary"].replace('"', "&quot;"),
             id=pid, heading=heading, authors=escape(fm_plain(authors)),
             date=date_fmt, category=escape(p["category"]),
-            version=escape(p.get("version", "v1.0")), pages=p.get("pages", "-"),
+            version=escape(raw_version), pages=p.get("pages", "-"),
             abstract_box=fm_html + "\n      " + abstract_box,
             summary=p["summary"], body=body)
         write(f"papers/{pid}.html", page)

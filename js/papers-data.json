@@ -18,7 +18,7 @@
         "case study"
       ],
       "date": "2026-10-22",
-      "version": "v1.0",
+      "version": "1.0",
       "pages": 14,
       "status": "new",
       "readUrl": "papers/paper-01-iep-case-study.html",
@@ -42,7 +42,7 @@
         "classroom use"
       ],
       "date": "2026-10-22",
-      "version": "v1.0 (draft)",
+      "version": "1.0 (draft)",
       "pages": 9,
       "status": "new",
       "readUrl": "papers/paper-02-zero-friction.html",
