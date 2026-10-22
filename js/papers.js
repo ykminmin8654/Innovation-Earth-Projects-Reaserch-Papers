@@ -50,7 +50,7 @@
       // arXiv-style identifier shown on the card, e.g. IEP-2026.0001
       var ident = identifier(p);
       html +=
-        '<article class="paper-card reveal" data-id="' + esc(p.id) + '" ' +
+        '<article class="paper-card" data-id="' + esc(p.id) + '" ' +
         'data-category="' + esc(p.category) + '" ' +
         'data-search="' + esc((p.title + " " + p.summary + " " + authors + " " + p.keywords.join(" ")).toLowerCase()) + '">' +
           '<div class="paper-card__top">' +
@@ -74,7 +74,11 @@
         '</article>';
     });
     grid.innerHTML = html;
-    observeReveals(grid.querySelectorAll(".reveal"));
+    // Cards are intentionally NOT given class="reveal": they render at full
+    // opacity immediately. (The reveal system starts elements at opacity:0
+    // and only shows them when an IntersectionObserver fires — if that ever
+    // failed, the library looked completely empty.) Other page sections keep
+    // their reveal animation via main.js.
   }
 
   // Standard preprint identifier from number + year, e.g. "Paper 01", 2026 -> IEP-2026.0001
