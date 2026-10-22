@@ -16,6 +16,15 @@ WHAT IT DOES, STEP BY STEP:
                                             otherwise skipped with a warning).
   5. Copies downloads/<id>.md so it can be downloaded from the site too.
   6. Builds downloads/all-papers.zip containing every .md and .pdf.
+  7. Writes papers/feed.json — the machine-readable catalog that the
+     main website's admin panel (innovationearthprojects.org/admin/)
+     uses to publish new papers straight into this repo.
+
+FRONT MATTER: papers may optionally start with a YAML block
+(--- ... ---) using the SAME field names the main site's products use
+(title, description, status, url, pricing, tags, order, icon, updatedAt).
+The admin panel writes exactly those fields, so one parser serves both.
+If a paper has no front-matter block, the JSON catalog entry is used.
 """
 import json, os, re, shutil, sys, zipfile
 
@@ -51,6 +60,113 @@ def escape(s):
 def fm_plain(s):
     """Strip markdown bold markers from a string (used for author lines)."""
     return re.sub(r"\*\*(.+?)\*\*", r"\1", s)
+
+# ---------------------------------------------------------------- front matter
+def parse_front_matter(md_text):
+    """If the markdown starts with a '--- YAML ---' block, return
+    (fields_dict, body_without_block). Otherwise return ({}, md_text).
+
+    Understands exactly the field style the main site's admin panel writes:
+      key: "quoted value"        key: 999        key: ["a", "b"]
+    Unknown keys are kept as-is; nothing here needs external libraries.
+    """
+    m = re.match(r"^---\s*\n(.*?)\n---\s*\n?", md_text, re.S)
+    if not m:
+        return {}, md_text
+    fields = {}
+    for raw in m.group(1).splitlines():
+        line = raw.strip()
+        if not line or ":" not in line:
+            continue
+        key, val = line.split(":", 1)
+        key, val = key.strip(), val.strip()
+        if val.startswith("[") and val.endswith("]"):          # inline list
+            try:
+                fields[key] = json.loads(val.replace("'", '"'))
+            except ValueError:
+                fields[key] = [x.strip().strip('"\'') for x in val[1:-1].split(",") if x.strip()]
+        elif len(val) >= 2 and val[0] == '"' and val[-1] == '"':  # quoted scalar
+            try:
+                fields[key] = json.loads(val)
+            except ValueError:
+                fields[key] = val[1:-1]
+        else:
+            fields[key] = val
+    return fields, md_text[m.end():]
+
+def apply_admin_fields(entry, fm):
+    """Merge admin-panel front-matter fields into a catalog entry.
+    Admin values win over JSON values, so publishing through
+    innovationearthprojects.org/admin/ is the authoritative path."""
+    if fm.get("title"):
+        entry["title"] = fm["title"]
+    if fm.get("description"):
+        entry["summary"] = fm["description"]
+    if fm.get("status"):
+        entry["status"] = fm["status"]
+    if fm.get("updatedAt"):
+        entry["date"] = fm["updatedAt"]
+    if fm.get("tags"):
+        tags = fm["tags"] if isinstance(fm["tags"], list) else [t.strip() for t in str(fm["tags"]).split(",")]
+        entry["keywords"] = [t for t in tags if t]
+    if fm.get("order") not in (None, ""):
+        try:
+            entry["order"] = int(fm["order"])
+        except ValueError:
+            pass
+    if fm.get("authors"):
+        a = fm["authors"]
+        entry["authors"] = a if isinstance(a, list) else [x.strip() for x in str(a).split(",") if x.strip()]
+    if fm.get("category"):
+        entry["category"] = fm["category"]
+    if fm.get("version"):
+        entry["version"] = fm["version"]
+    if fm.get("pages") not in (None, ""):
+        try:
+            entry["pages"] = int(fm["pages"])
+        except ValueError:
+            pass
+    return entry
+
+# ---------------------------------------------------------------- discovery
+def discover_papers(papers_dir, existing_ids):
+    """Find markdown files the ADMIN panel created that are NOT yet listed
+    in js/papers-data.json. Admin writes papers/data/<slug>.md; hand-written
+    sources live at papers/<id>.md. Auto-created entries keep the library
+    working end-to-end even before anyone edits the JSON by hand."""
+    found = []
+    data_dir = os.path.join(ROOT, papers_dir, "data")
+    if not os.path.isdir(data_dir):
+        return found
+    for fname in sorted(os.listdir(data_dir)):
+        if not fname.endswith(".md") or fname == "README.md":
+            continue  # README.md documents the folder; it is not a paper
+        slug = fname[:-3]
+        if slug in existing_ids:
+            continue
+        fm, _body = parse_front_matter(read(os.path.join(papers_dir, "data", fname)))
+        title = fm.get("title") or slug.replace("-", " ").title()
+        entry = {
+            "id": slug,
+            "number": "Preprint",
+            "title": title,
+            "authors": fm.get("authors") or ["IEP Research Division"],
+            "summary": fm.get("description") or "Published via the IEP content admin.",
+            "category": fm.get("category") or "Education Research",
+            "keywords": fm.get("tags") or [],
+            "date": fm.get("updatedAt") or "",
+            "version": str(fm.get("version") or "1.0").lstrip("vV"),
+            "pages": int(fm.get("pages") or 10),
+            "status": fm.get("status") or "live",
+            "order": int(fm.get("order") or 999),
+            "autoDiscovered": True,
+            "readUrl": f"papers/{slug}.html",
+            "pdfUrl": f"downloads/{slug}.pdf",
+            "mdUrl": f"downloads/{slug}.md",
+        }
+        found.append(entry)
+        print(f"  DISCOVERED admin-published paper: {slug} ({title[:50]})")
+    return found
 
 # ---------------------------------------------------------------- template
 PAGE_TEMPLATE = """<!DOCTYPE html>
@@ -306,7 +422,13 @@ def main():
         print("cleaned generated files")
 
     data = json.loads(read("js/papers-data.json"))
-    papers = data["papers"]
+    papers = list(data["papers"])
+
+    # Admin-published papers: anything in papers/data/*.md that is not
+    # already declared in the JSON gets an auto-created catalog entry.
+    known_ids = {p["id"] for p in papers}
+    papers += discover_papers("papers", known_ids)
+
     print(f"Building {len(papers)} paper(s)...")
 
     try:
@@ -316,13 +438,27 @@ def main():
         have_pdf = False
         print("  NOTE: fpdf2 not installed - PDF step will be skipped.")
 
+    built = []  # catalog entries that actually made it onto the site -> feed.json
     for p in papers:
         pid = p["id"]
+        # Hand-written sources live at papers/<id>.md; admin-published
+        # sources live at papers/data/<id>.md. Check both, prefer manual.
         md_path = f"papers/{pid}.md"
         if not os.path.exists(os.path.join(ROOT, md_path)):
-            print(f"  SKIP {pid}: missing source {md_path}")
+            alt = f"papers/data/{pid}.md"
+            md_path = alt if os.path.exists(os.path.join(ROOT, alt)) else None
+        if md_path is None:
+            print(f"  SKIP {pid}: missing source papers/{pid}.md")
             continue
-        md_text = read(md_path)
+        md_text_raw = read(md_path)
+
+        # 0. Front matter: admin-published fields override the JSON entry,
+        #    and 'draft'/'soon' papers are held back from the public library.
+        fm, md_text = parse_front_matter(md_text_raw)
+        p = apply_admin_fields(dict(p), fm)
+        if str(p.get("status", "live")) in ("draft", "soon"):
+            print(f"  HOLD {pid}: status '{p['status']}' is not live - not published")
+            continue
 
         # 1. HTML page (preprint layout: header + abstract box + body)
         title_h1, fm_html, abstract_md, rest_md = split_abstract(md_text)
@@ -355,10 +491,15 @@ def main():
                         os.path.join(ROOT, f"downloads/{pid}.md"))
         print(f"  copied downloads/{pid}.md")
 
-        # 3. PDF (optional - needs the 'fpdf2' package)
+        # 3. PDF (optional - needs the 'fpdf2' package). Built from md_text
+        #    (front-matter block already removed) so the YAML never leaks
+        #    into the printed article.
         if have_pdf:
             make_pdf(md_text, p["title"], f"downloads/{pid}.pdf")
             print(f"  built downloads/{pid}.pdf")
+
+        # 4. Record this paper for the machine-readable feed below.
+        built.append(p)
 
     # 4. ZIP bundle of everything downloadable
     zip_path = os.path.join(ROOT, "downloads", "all-papers.zip")
@@ -368,6 +509,36 @@ def main():
                 if f.endswith((".md", ".pdf")):
                     z.write(os.path.join(ROOT, d, f), arcname=f)
     print("  bundled downloads/all-papers.zip")
+
+    # 5. papers/feed.json — the catalog the MAIN SITE reads.
+    #    innovationearthprojects.org links here; its admin panel can write
+    #    new .md files into papers/ (same front-matter style as products),
+    #    and anything rebuilt from a live status shows up in this feed.
+    #    Shape mirrors the Worker's /products feed: slug, title, description…
+    built.sort(key=lambda x: (int(x.get("order", 999)), str(x.get("date", "")), ))
+    feed = {
+        "$comment": "GENERATED by build.py - do not edit by hand. Catalog of published papers for innovationearthprojects.org and js/papers.js.",
+        "generatedAt": __import__("datetime").date.today().isoformat(),
+        "papers": [
+            {
+                "slug": b["id"],
+                "title": b["title"],
+                "description": b["summary"],
+                "authors": b.get("authors", ["IEP Research Division"]),
+                "category": b.get("category", ""),
+                "keywords": b.get("keywords", []),
+                "status": b.get("status", "live"),
+                "date": b.get("date", ""),
+                "version": str(b.get("version", "1.0")).lstrip("vV"),
+                "pages": b.get("pages", "-"),
+                "pricing": b.get("pricing", "Free"),
+                "readUrl": f"papers/{b['id']}.html",
+                "pdfUrl": f"downloads/{b['id']}.pdf",
+                "mdUrl": f"downloads/{b['id']}.md",
+            } for b in built
+        ],
+    }
+    write("papers/feed.json", json.dumps(feed, indent=2, ensure_ascii=False) + "\n")
     print("Done.")
 
 if __name__ == "__main__":

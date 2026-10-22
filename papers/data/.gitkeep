@@ -1,0 +1,2 @@
+This folder is written to by the admin panel (admin.html).
+Keep it in git so the directory exists for build.py and GitHub Actions.

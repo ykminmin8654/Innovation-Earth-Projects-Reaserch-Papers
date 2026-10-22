@@ -42,3 +42,27 @@ against what is deployed.
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 (A plain file:// open works too, but some browsers block fetch() of the JSON locally.)
+
+## Publishing from the main-site admin (recommended)
+
+The papers library shares ONE admin system with innovationearthprojects.org:
+
+- **admin.html** (this repo) — "Research Papers Manager". Same admin key,
+  same Cloudflare Worker gate (`/gate`), same GitHub proxy (`/api/v1/github`).
+  Unlock once; the session ticket is shared with the products admin.
+- New papers are committed as Markdown to `papers/data/<slug>.md` with YAML
+  front matter (title, authors, description, status, category, version,
+  pages, tags, order, updatedAt) — the same field style the products admin
+  writes for `products/data/*.md`.
+- `.github/workflows/build-papers.yml` watches `papers/` and runs
+  `build.py` automatically after every admin save: it regenerates the
+  preprint HTML page, PDF download, `papers/feed.json` catalog, and the
+  ZIP bundle, then commits them back. Live in ~2 minutes.
+- `build.py` also *discovers* any `papers/data/*.md` file that has no JSON
+  entry yet, so an admin publish works even before anyone touches
+  `js/papers-data.json`. Set Status = Draft in the admin to keep a paper
+  out of the public library without deleting it.
+
+Audit path: admin commit -> `git log -- papers/data` shows who published
+what (commit messages say "via admin"); all generated artifacts are
+reproducible with `python3 build.py`.

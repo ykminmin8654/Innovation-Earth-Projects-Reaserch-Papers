@@ -99,8 +99,14 @@
   }
 
   function identifier(p) {
-    // Number derived from position in the list ("Paper 01" -> 0001).
-    var num = (p.number || "").replace(/\D+/g, "") || "0001";
+    // Declared papers use their "number"; admin-published papers without one
+    // get a stable pseudo-number derived from the slug (same slug -> same id).
+    var num = (p.number || "").replace(/\D+/g, "");
+    if (!num) {
+      var h = 0, s = String(p.id || p.slug || "x");
+      for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9000;
+      num = String(1000 + h);
+    }
     while (num.length < 4) num = "0" + num;
     var year = String(p.date || "").slice(0, 4) || "2026";
     return "IEP-" + year + "." + num;

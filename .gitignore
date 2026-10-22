@@ -1,6 +1,2 @@
-# macOS junk
+*.zip
 .DS_Store
-
-# Python build artifacts
-__pycache__/
-*.pyc
