@@ -46,7 +46,7 @@
           title: p.title, authors: p.authors, category: p.category,
           keywords: p.keywords || [], date: p.date, version: p.version,
           pages: p.pages, number: p.number, pdfUrl: p.pdfUrl,
-          readUrl: p.readUrl, mdUrl: p.mdUrl, status: p.status
+          readUrl: p.readUrl, status: p.status
         };
       });
       // Newest first, using the ISO date string (safe lexicographic sort).

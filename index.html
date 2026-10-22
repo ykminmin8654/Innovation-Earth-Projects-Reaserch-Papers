@@ -107,7 +107,7 @@
             Every published paper in one searchable list, newest first. Each row
             links straight to the raw PDF file — click, download, done. An HTML
             reading copy is available per paper for anyone who prefers the
-            browser, plus Markdown sources for auditors.
+            browser, and the original author-uploaded PDF is always what gets served.
           </p>
         </article>
       </div>
@@ -137,7 +137,7 @@
           <em>built from real problems</em> (we only write about things we've hit ourselves).
         </p>
         <p>
-          Papers are plain Markdown files in a public repository, compiled by one
+          Papers are PDF files in a public repository, published by one
           auditable build script into this site's pages and PDFs. That means every
           claim on this site can be traced back to a text file — a nice property
           for research, and an even nicer one if you're curious how it works.
@@ -164,9 +164,9 @@
         <p class="section__sub">Plain files, one build script — everything is auditable.</p>
       </header>
       <ol class="num-list" style="font-size:1rem">
-        <li><strong>Write the paper as Markdown.</strong> Create <code>papers/&lt;id&gt;.md</code> with a <code># Title</code>, a <code>## Abstract</code> section, and the body. That file is the single editable source of truth.</li>
+        <li><strong>Upload the paper as a PDF.</strong> Drop your finished article at <code>papers/&lt;id&gt;.pdf</code>. That file is the canonical artifact visitors download &mdash; it is never modified or regenerated.</li>
         <li><strong>Add it to the catalog.</strong> One entry in <code>js/papers-data.json</code> — title, authors, summary, category, keywords, date, version, pages.</li>
-        <li><strong>Run the build.</strong> <code>python3 build.py</code> generates the reading page, the PDF, the Markdown copy, the ZIP bundle, and refreshes <code>papers/feed.json</code>. Both pages read from that feed automatically — no HTML edits needed.</li>
+        <li><strong>Run the build.</strong> <code>python3 build.py --from-pdf &lt;id&gt;</code> extracts the text once so a styled "read in browser" page can be generated, then <code>python3 build.py</code> copies your PDF into <code>downloads/</code>, rebuilds the ZIP bundle, and refreshes <code>papers/feed.json</code>. Both pages read from that feed automatically — no HTML edits needed.</li>
         <li><strong>Push to GitHub</strong> — GitHub Pages serves the updated download list automatically.</li>
       </ol>
     </div>

@@ -22,8 +22,7 @@
       "pages": 14,
       "status": "live",
       "readUrl": "papers/paper-01-iep-case-study/",
-      "pdfUrl": "downloads/paper-01-iep-case-study.pdf",
-      "mdUrl": "downloads/paper-01-iep-case-study.md"
+      "pdfUrl": "downloads/paper-01-iep-case-study.pdf"
     },
     {
       "id": "paper-02-zero-friction",
@@ -46,8 +45,7 @@
       "pages": 9,
       "status": "live",
       "readUrl": "papers/paper-02-zero-friction/",
-      "pdfUrl": "downloads/paper-02-zero-friction.pdf",
-      "mdUrl": "downloads/paper-02-zero-friction.md"
+      "pdfUrl": "downloads/paper-02-zero-friction.pdf"
     }
   ]
 }

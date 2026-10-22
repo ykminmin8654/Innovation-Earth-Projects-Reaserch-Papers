@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 """
-build.py - turns markdown papers into the website's HTML pages,
-PDF downloads, and a ZIP bundle. Deterministic and dependency-light
-so any human can read it, run it, and check its output.
+build.py - publishes PDF research papers to the download site.
+
+THE PAPER FORMAT IS PDF (industry preprint style). To add a paper:
+  1. Drop your finished PDF at  papers/<id>.pdf   <- that is the upload.
+  2. Add an entry to js/papers-data.json (title, authors, summary...).
+  3. Run: python3 build.py --from-pdf <id>       <- one-time text extract.
+That last step extracts the article text from YOUR pdf using pypdf and
+writes papers/<id>.md, which becomes the source for the styled 'read in
+browser' page. After that, plain `python3 build.py` regenerates pages,
+the ZIP bundle, and papers/feed.json. The canonical downloadable file
+stays papers/<id>.pdf - we do NOT rebuild your PDF from markdown; the
+copy served at /downloads/<id>.pdf is always just your original file.
 
 Usage:
     python3 build.py            # rebuild everything
@@ -204,7 +213,6 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
       <hr class="rule" />
       <div class="paper-detail__downloads">
         <a class="btn btn--primary" href="../downloads/{id}.pdf" download><i class="fas fa-file-arrow-down"></i> Download article (PDF)</a>
-        <a class="btn btn--secondary" href="../downloads/{id}.md" download><i class="fab fa-markdown"></i> Download Markdown source</a>
         <a class="btn btn--ghost" href="https://innovationearthprojects.org/home/"><i class="fas fa-globe"></i> innovationearthprojects.org</a>
       </div>
     </div>
@@ -377,6 +385,12 @@ def make_pdf(md_text, title, out_rel_path):
 
 
 def main():
+    if "--from-pdf" in sys.argv:
+        i = sys.argv.index("--from-pdf")
+        if i + 1 >= len(sys.argv):
+            sys.exit("usage: python3 build.py --from-pdf <paper-id>")
+        extract_pdf_text(sys.argv[i + 1])
+        return
     if "--clean" in sys.argv:
         for d in ("papers", "downloads"):
             for f in os.listdir(os.path.join(ROOT, d)):
@@ -399,10 +413,21 @@ def main():
     built = []  # catalog entries that actually made it onto the site -> feed.json
     for p in papers:
         pid = p["id"]
-        # Every paper's editable source lives at papers/<id>.md.
+        # The canonical paper file is the uploaded PDF at papers/<id>.pdf.
+        pdf_src = f"papers/{pid}.pdf"
+        if not os.path.exists(os.path.join(ROOT, pdf_src)):
+            print(f"  SKIP {pid}: missing papers/{pid}.pdf (upload the PDF first)")
+            continue
+        # Serve the author's ORIGINAL pdf unchanged at /downloads/<id>.pdf.
+        shutil.copyfile(os.path.join(ROOT, pdf_src),
+                        os.path.join(ROOT, f"downloads/{pid}.pdf"))
+        print(f"  served downloads/{pid}.pdf (verbatim copy of papers/{pid}.pdf)")
+        # The readable web page comes from the extracted text, if present.
         md_path = f"papers/{pid}.md"
         if not os.path.exists(os.path.join(ROOT, md_path)):
-            print(f"  SKIP {pid}: missing source papers/{pid}.md")
+            print(f"  NOTE {pid}: no papers/{pid}.md yet - run "
+                  f"'python3 build.py --from-pdf {pid}' once to extract text.")
+            built.append(p)
             continue
         md_text_raw = read(md_path)
 
@@ -439,20 +464,9 @@ def main():
             summary=p["summary"], body=body)
         write(f"papers/{pid}/index.html", page)
 
-        # 2. Copy markdown into downloads/ for site visitors
-        os.makedirs(os.path.join(ROOT, "downloads"), exist_ok=True)
-        shutil.copyfile(os.path.join(ROOT, md_path),
-                        os.path.join(ROOT, f"downloads/{pid}.md"))
-        print(f"  copied downloads/{pid}.md")
-
-        # 3. PDF (optional - needs the 'fpdf2' package). Built from md_text
-        #    (front-matter block already removed) so the YAML never leaks
-        #    into the printed article.
-        if have_pdf:
-            make_pdf(md_text, p["title"], f"downloads/{pid}.pdf")
-            print(f"  built downloads/{pid}.pdf")
-
-        # 4. Record this paper for the machine-readable feed below.
+        # 2. Record this paper for the machine-readable feed below.
+        #    (No markdown copy in downloads/, no generated PDF: the only
+        #     downloadable per-paper file is the author's uploaded PDF.)
         built.append(p)
 
     # 4. ZIP bundle of everything downloadable
@@ -460,7 +474,7 @@ def main():
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
         for d in ("downloads",):
             for f in sorted(os.listdir(os.path.join(ROOT, d))):
-                if f.endswith((".md", ".pdf")):
+                if f.endswith(".pdf"):
                     z.write(os.path.join(ROOT, d, f), arcname=f)
     print("  bundled downloads/all-papers.zip")
 
@@ -493,12 +507,41 @@ def main():
                 "pricing": b.get("pricing", "Free"),
                 "readUrl": f"papers/{b['id']}/",
                 "pdfUrl": f"downloads/{b['id']}.pdf",
-                "mdUrl": f"downloads/{b['id']}.md",
             } for b in built
         ],
     }
     write("papers/feed.json", json.dumps(feed, indent=2, ensure_ascii=False) + "\n")
     print("Done.")
+
+
+def extract_pdf_text(pid):
+    """One-time helper: pull the article text out of the author's uploaded
+    papers/<id>.pdf and save it as papers/<id>.md so build.py can render
+    the 'read in browser' page. The PDF stays the canonical artifact;
+    this .md is only a convenience copy of its text."""
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        sys.exit("pypdf is required for --from-pdf: pip install pypdf")
+    pdf_path = os.path.join(ROOT, f"papers/{pid}.pdf")
+    if not os.path.exists(pdf_path):
+        sys.exit(f"No such PDF: {pdf_path} - upload the paper there first.")
+    reader = PdfReader(pdf_path)
+    chunks = []
+    for page in reader.pages:
+        txt = page.extract_text() or ""
+        txt = re.sub(r"[ \t]+", " ", txt)          # collapse runs of spaces
+        txt = re.sub(r"\n{3,}", "\n\n", txt)      # collapse blank-line spam
+        chunks.append(txt.strip())
+    body = "\n\n".join(c for c in chunks if c)
+    title = None
+    m = re.search(r"^([A-Z0-9][^\n]{10,200}?)\s*\n", body)
+    if m: title = m.group(1).strip()
+    header = f"# {title}\n\n" if title else ""
+    out = f"papers/{pid}.md"
+    write(out, header + body + "\n")
+    print(f"Extracted text from papers/{pid}.pdf -> {out}")
+    print("Edit that file if you want nicer headings on the web page, then run: python3 build.py")
 
 if __name__ == "__main__":
     main()

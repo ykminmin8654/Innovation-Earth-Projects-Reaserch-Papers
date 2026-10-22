@@ -17,7 +17,8 @@ js/papers-data.json         ← THE PAPER LIST (single source of truth) — edit
 js/downloads.js             ← renders the download rows on downloads/ + search/filter
 js/paper-page.js            ← fills the preprint header on a paper page: metadata, keywords, citation
 js/main.js                  ← shared scroll-reveal animation only
-papers/<id>.md              ← paper SOURCE in Markdown (this is what authors write/edit)
+papers/<id>.pdf             ← THE PAPER itself, uploaded by the author (canonical download)
+papers/<id>.md              ← extracted text (generated once via --from-pdf; used for the web page)
 papers/<id>/index.html (URL: /papers/<id>/)            ← GENERATED readable web page (do not hand-edit; rebuilt by build.py)
 papers/feed.json            ← GENERATED machine-readable catalog (for the main site to fetch/link)
 downloads/<id>.pdf          ← GENERATED download copy
@@ -32,12 +33,13 @@ so this site visually links into the main IEP website.
 
 ## How to publish a new paper (4 steps, no HTML editing)
 
-1. Write the paper as Markdown: `papers/paper-03-my-topic.md`
+1. Upload the paper as a PDF: `papers/paper-03-my-topic.pdf` (the canonical download file)
    (a `# Title`, a `## Abstract` section, then the body; optional YAML
    front matter overrides fields from step 2)
 2. Add one entry to `js/papers-data.json` (title, authors, summary, category,
    date, version, pages, keywords, id).
-3. Run the build: `pip install fpdf2 && python3 build.py`
+3. Run the build: `pip install pypdf markdown && python3 build.py --from-pdf paper-03-my-topic && python3 build.py`
+   (`--from-pdf` extracts text once into `papers/<id>.md` for the read-in-browser page; your PDF is served verbatim.)
 4. Commit + push → GitHub Pages updates automatically.
 
 Everything generated (`.html`, `.pdf`, `.zip`, `feed.json`) is reproducible

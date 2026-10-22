@@ -28,8 +28,7 @@
       "pages": 14,
       "pricing": "Free",
       "readUrl": "papers/paper-01-iep-case-study/",
-      "pdfUrl": "downloads/paper-01-iep-case-study.pdf",
-      "mdUrl": "downloads/paper-01-iep-case-study.md"
+      "pdfUrl": "downloads/paper-01-iep-case-study.pdf"
     },
     {
       "slug": "paper-02-zero-friction",
@@ -52,8 +51,7 @@
       "pages": 9,
       "pricing": "Free",
       "readUrl": "papers/paper-02-zero-friction/",
-      "pdfUrl": "downloads/paper-02-zero-friction.pdf",
-      "mdUrl": "downloads/paper-02-zero-friction.md"
+      "pdfUrl": "downloads/paper-02-zero-friction.pdf"
     }
   ]
 }
